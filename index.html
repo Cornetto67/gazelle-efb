@@ -238,8 +238,23 @@
 
         function getAltitudeForCurve(curvePts, mass) {
             const pts = [...curvePts].sort((a,b) => a.x - b.x);
-            if (mass <= pts[0].x) return pts[0].y;
-            if (mass >= pts[pts.length - 1].x) return pts[pts.length - 1].y;
+            if (pts.length === 0) return 0;
+            if (mass <= pts[0].x) {
+                if (pts.length >= 2) {
+                    const slope = (pts[1].y - pts[0].y) / (pts[1].x - pts[0].x);
+                    return pts[0].y + slope * (mass - pts[0].x);
+                }
+                return pts[0].y;
+            }
+            if (mass >= pts[pts.length - 1].x) {
+                if (pts.length >= 2) {
+                    const p1 = pts[pts.length - 2];
+                    const p2 = pts[pts.length - 1];
+                    const slope = (p2.y - p1.y) / (p2.x - p1.x);
+                    return p2.y + slope * (mass - p2.x);
+                }
+                return pts[pts.length - 1].y;
+            }
             for (let i = 0; i < pts.length - 1; i++) {
                 if (mass >= pts[i].x && mass <= pts[i+1].x) {
                     const diffX = pts[i+1].x - pts[i].x;
@@ -252,8 +267,23 @@
 
         function getMassForCurve(curvePts, altitude) {
             const pts = [...curvePts].sort((a,b) => a.x - b.x);
-            if (altitude >= pts[0].y) return pts[0].x; 
-            if (altitude <= pts[pts.length - 1].y) return pts[pts.length - 1].x; 
+            if (pts.length === 0) return 1400;
+            if (altitude >= pts[0].y) {
+                if (pts.length >= 2) {
+                    const slope = (pts[1].x - pts[0].x) / (pts[1].y - pts[0].y);
+                    return pts[0].x + slope * (altitude - pts[0].y);
+                }
+                return pts[0].x; 
+            }
+            if (altitude <= pts[pts.length - 1].y) {
+                if (pts.length >= 2) {
+                    const p1 = pts[pts.length - 2];
+                    const p2 = pts[pts.length - 1];
+                    const slope = (p2.x - p1.x) / (p2.y - p1.y);
+                    return p2.x + slope * (altitude - p2.y);
+                }
+                return pts[pts.length - 1].x; 
+            }
             for (let i = 0; i < pts.length - 1; i++) {
                 const y1 = pts[i].y;
                 const y2 = pts[i+1].y;

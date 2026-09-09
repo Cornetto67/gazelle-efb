@@ -336,6 +336,41 @@
             return null;
         }
 
+        function isPointInEnvelope(x, y, envelope) {
+            if (!envelope || envelope.length < 2) return true;
+            let intersectionsY = [];
+            for(let i=0; i<envelope.length-1; i++) {
+                let p1 = envelope[i], p2 = envelope[i+1];
+                let minX = Math.min(p1.x, p2.x), maxX = Math.max(p1.x, p2.x);
+                if (x >= minX && x <= maxX) {
+                    if (maxX === minX) intersectionsY.push(Math.max(p1.y, p2.y));
+                    else intersectionsY.push(p1.y + (x - p1.x) * (p2.y - p1.y) / (p2.x - p1.x));
+                }
+            }
+            if (intersectionsY.length === 0) {
+                let closestPt = envelope.reduce((prev, curr) => Math.abs(curr.x - x) < Math.abs(prev.x - x) ? curr : prev);
+                intersectionsY.push(closestPt.y);
+            }
+            if (y > Math.max(...intersectionsY)) return false;
+
+            let intersectionsX = [];
+            for(let i=0; i<envelope.length-1; i++) {
+                let p1 = envelope[i], p2 = envelope[i+1];
+                let minY = Math.min(p1.y, p2.y), maxY = Math.max(p1.y, p2.y);
+                if (y >= minY && y <= maxY) {
+                    if (maxY === minY) intersectionsX.push(Math.max(p1.x, p2.x));
+                    else intersectionsX.push(p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y));
+                }
+            }
+            if (intersectionsX.length === 0) {
+                let closestPt = envelope.reduce((prev, curr) => Math.abs(curr.y - y) < Math.abs(prev.y - y) ? curr : prev);
+                intersectionsX.push(closestPt.x);
+            }
+            if (x > Math.max(...intersectionsX)) return false;
+
+            return true;
+        }
+
         // ================= DRAW / UI =================
 
         function drawChart() {
@@ -361,13 +396,11 @@
             const temp = parseFloat(tempInput.value);
             let finalMass = 1400;
             let finalAlt = 0;
-            let isCapped = false;
 
             if (currentMode === 'ALT') {
                 finalMass = parseFloat(massInput.value);
                 let rawAlt = getCalculatedValue(temp, finalMass);
                 finalAlt = rawAlt;
-                if(finalAlt > 4000) { isCapped = true; }
                 
                 resultTitle.textContent = "Plafond Calculé";
                 resultLabel.textContent = "Altitude max";
@@ -377,12 +410,9 @@
                 resultValSec.textContent = Math.round(finalAlt * 3.28084);
             } else {
                 finalAlt = parseFloat(altInput.value);
-                if(finalAlt > 4000) isCapped = true; 
 
                 let rawMass = getCalculatedValue(temp, finalAlt);
                 finalMass = rawMass;
-                if(finalMass > 2200) { isCapped = true; }
-                if(finalMass < 1400) { isCapped = true; }
 
                 resultTitle.textContent = "Masse Maximale";
                 resultLabel.textContent = "Masse autorisée";
@@ -391,8 +421,16 @@
                 resultSecondaryBlock.classList.add('hidden');
             }
 
-            if(isCapped) capWarning.classList.remove('hidden');
-            else capWarning.classList.add('hidden');
+            let inEnvelope = isPointInEnvelope(finalMass, finalAlt, chartDef.limitEnvelope);
+            if (!inEnvelope) {
+                resultValMain.className = "text-3xl font-black text-red-600";
+                capWarning.classList.remove('hidden');
+                capWarning.textContent = "HORS DOMAINE";
+                capWarning.className = "absolute -top-3 right-2 bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded border border-red-200 shadow-sm";
+            } else {
+                resultValMain.className = "text-3xl font-black text-gray-800";
+                capWarning.classList.add('hidden');
+            }
 
             const plotlyCurves = activeData.map(curve => {
                 const sortedPts = [...curve.points].sort((a,b) => a.x - b.x);

@@ -369,10 +369,13 @@
                 return { t: curve.temp, x: sortedPts.map(p=>p.x), y: sortedPts.map(p=>p.y) };
             });
 
-            const traces = plotlyCurves.map(curve => ({
-                x: curve.x, y: curve.y, mode: 'lines', line: { color: '#cbd5e1', width: 2 },
-                name: `${curve.t}°C`, hoverinfo: 'name', showlegend: false
-            }));
+            const traces = plotlyCurves.map(curve => {
+                const textArr = curve.x.map((_, i) => i === curve.x.length - 1 ? `${curve.t}°` : '');
+                return {
+                    x: curve.x, y: curve.y, text: textArr, mode: 'lines+text', textposition: 'middle right',
+                    textfont: { color: '#94a3b8', size: 11, family: 'sans-serif' },
+                    line: { color: '#cbd5e1', width: 2 }, name: `${curve.t}°C`, hoverinfo: 'name', showlegend: false
+            });
 
             let limitTrace = {
                 x: [1400, 2200], y: [4000, 4000], mode: 'lines',
@@ -405,7 +408,7 @@
 
             const layout = {
                 title: { text: chartDef.title, font: { family: 'sans-serif', size: 16, color: '#475569' }, x: 0.05, y: 0.95 },
-                xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, 2200], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
+                xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, 2250], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
                 yaxis: { title: chartDef.yAxisLabel || 'ALTITUDE PRESSION (m)', range: [-1000, 6000], dtick: 1000, gridcolor: '#e2e8f0', zeroline: true },
                 margin: { l: 70, r: 40, t: 80, b: 60 }, plot_bgcolor: '#ffffff', paper_bgcolor: 'transparent',
                 hovermode: 'closest', dragmode: false

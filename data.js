@@ -12,6 +12,30 @@
 // - configLabel: "Nom qui apparaîtra dans le 2ème menu déroulant"
 // - xAxisLabel et yAxisLabel : Les titres des axes (si besoin de les changer)
 
+// =========================================================================
+// BASE DE DONNÉES DE LA FLOTTE
+// =========================================================================
+const fleetDatabase = {
+    "F-MGAP": { number: "1234", config: "ARME", emptyWeight: 1250, emptyMomLong: 4500, emptyMomLat: 10 },
+    "F-MXXX": { number: "5678", config: "LISSE", emptyWeight: 1265, emptyMomLong: 4520, emptyMomLat: 12 }
+};
+
+// =========================================================================
+// SCÉNARIOS DE VOL
+// =========================================================================
+// Utilisez "SUFFIX" dans la liste des abaques pour qu'il soit remplacé par
+// la configuration de la machine (_ARME ou _LISSE)
+const scenariosDatabase = {
+    "VOLTAC": {
+        label: "Vol Tactique",
+        charts: ["TAC_SUFFIX"] // Sera remplacé par TAC_ARME ou TAC_LISSE
+    },
+    "MONTAGNE": {
+        label: "Vol Montagne",
+        charts: ["HES_SUFFIX", "DES_SUFFIX"] // Sera remplacé par HES_ARME, DES_ARME...
+    }
+};
+
 const chartsDatabase = {
     
     // ================== PLAFONDS H.E.S. ==================

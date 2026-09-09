@@ -367,7 +367,7 @@
                 finalMass = parseFloat(massInput.value);
                 let rawAlt = getCalculatedValue(temp, finalMass);
                 finalAlt = rawAlt;
-                if(finalAlt > 4000) { finalAlt = 4000; isCapped = true; }
+                if(finalAlt > 4000) { isCapped = true; }
                 
                 resultTitle.textContent = "Plafond Calculé";
                 resultLabel.textContent = "Altitude max";
@@ -381,8 +381,8 @@
 
                 let rawMass = getCalculatedValue(temp, finalAlt);
                 finalMass = rawMass;
-                if(finalMass > 2200) { finalMass = 2200; isCapped = true; }
-                if(finalMass < 1400) { finalMass = 1400; isCapped = true; }
+                if(finalMass > 2200) { isCapped = true; }
+                if(finalMass < 1400) { isCapped = true; }
 
                 resultTitle.textContent = "Masse Maximale";
                 resultLabel.textContent = "Masse autorisée";

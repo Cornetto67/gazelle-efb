@@ -3,7 +3,8 @@
 // =========================================================================
 // MODE D'EMPLOI POUR AJOUTER/MODIFIER UNE COURBE :
 // 1. Utilisez "digitizer.html" pour obtenir le JSON de votre courbe.
-// 2. Collez-le dans les crochets "curves: [...]" du bloc correspondant.
+// 2. Collez-le dans les crochets "limitEnvelope: [],
+        curves: [...]" du bloc correspondant.
 // 
 // POUR AJOUTER UNE TOUTE NOUVELLE CATÉGORIE (Ex: Masse max au décollage) :
 // Copiez-collez un bloc entier (ex: de "HES_ARME": { ... } ) et changez :
@@ -24,6 +25,7 @@ const chartsDatabase = {
         planche: "Planche 9",
         xAxisLabel: "MASSE (kg)",
         yAxisLabel: "ALTITUDE PRESSION (m)",
+        limitEnvelope: [],
         curves: [
           {"temp": 50, "points": [{"x": 2202, "y": 101}, {"x": 2186, "y": 178}, {"x": 2165, "y": 279}, {"x": 2130, "y": 419}, {"x": 2099, "y": 546}, {"x": 2070, "y": 671}, {"x": 2031, "y": 836}, {"x": 1984, "y": 1001}, {"x": 1945, "y": 1154}, {"x": 1905, "y": 1332}, {"x": 1862, "y": 1522}, {"x": 1819, "y": 1713}, {"x": 1771, "y": 1916}, {"x": 1714, "y": 2158}, {"x": 1662, "y": 2400}, {"x": 1604, "y": 2705}, {"x": 1542, "y": 3010}, {"x": 1487, "y": 3289}, {"x": 1402, "y": 3722}]},
           {"temp": 40, "points": [{"x": 2198, "y": 493}, {"x": 2172, "y": 620}, {"x": 2139, "y": 760}, {"x": 2099, "y": 950}, {"x": 2044, "y": 1166}, {"x": 1992, "y": 1383}, {"x": 1947, "y": 1573}, {"x": 1877, "y": 1853}, {"x": 1817, "y": 2133}, {"x": 1767, "y": 2361}, {"x": 1699, "y": 2654}, {"x": 1650, "y": 2908}, {"x": 1584, "y": 3226}, {"x": 1532, "y": 3493}, {"x": 1478, "y": 3772}, {"x": 1435, "y": 3989}, {"x": 1398, "y": 4192}]},
@@ -46,6 +48,8 @@ const chartsDatabase = {
         planche: "Planche 9A",
         xAxisLabel: "MASSE (kg)",
         yAxisLabel: "ALTITUDE PRESSION (m)",
+        limitEnvelope: [],
+        limitEnvelope: [],
         curves: [
           {"temp": 50, "points": [{"x": 2199, "y": 457}, {"x": 2084, "y": 870}, {"x": 1955, "y": 1376}, {"x": 1804, "y": 2016}, {"x": 1681, "y": 2549}, {"x": 1567, "y": 3082}, {"x": 1457, "y": 3615}, {"x": 1401, "y": 3908}]},
           {"temp": 40, "points": [{"x": 2199, "y": 803}, {"x": 2103, "y": 1203}, {"x": 1964, "y": 1749}, {"x": 1852, "y": 2229}, {"x": 1748, "y": 2682}, {"x": 1646, "y": 3162}, {"x": 1532, "y": 3722}, {"x": 1444, "y": 4188}, {"x": 1401, "y": 4401}]},
@@ -70,6 +74,7 @@ const chartsDatabase = {
         planche: "Planche 10",
         xAxisLabel: "MASSE (kg)",
         yAxisLabel: "ALTITUDE PRESSION (m)",
+        limitEnvelope: [],
         curves: [
           {"temp": 50, "points": [{"x": 2199, "y": 735}, {"x": 2097, "y": 1107}, {"x": 1982, "y": 1581}, {"x": 1871, "y": 2030}, {"x": 1777, "y": 2427}, {"x": 1675, "y": 2889}, {"x": 1571, "y": 3376}, {"x": 1466, "y": 3901}, {"x": 1403, "y": 4222}]},
           {"temp": 40, "points": [{"x": 2199, "y": 1107}, {"x": 2099, "y": 1491}, {"x": 1988, "y": 1940}, {"x": 1874, "y": 2414}, {"x": 1765, "y": 2889}, {"x": 1673, "y": 3299}, {"x": 1601, "y": 3671}, {"x": 1513, "y": 4107}, {"x": 1403, "y": 4671}]},
@@ -92,6 +97,7 @@ const chartsDatabase = {
         planche: "Planche 10A",
         xAxisLabel: "MASSE (kg)",
         yAxisLabel: "ALTITUDE PRESSION (m)",
+        limitEnvelope: [],
         curves: []
     },
 
@@ -105,6 +111,7 @@ const chartsDatabase = {
         planche: "Planche 11",
         xAxisLabel: "MASSE (kg)",
         yAxisLabel: "ALTITUDE PRESSION (m)",
+        limitEnvelope: [],
         curves: []
     },
     "TAC_LISSE": {
@@ -116,6 +123,7 @@ const chartsDatabase = {
         planche: "Planche 11A",
         xAxisLabel: "MASSE (kg)",
         yAxisLabel: "ALTITUDE PRESSION (m)",
+        limitEnvelope: [],
         curves: []
     }
 };

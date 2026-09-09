@@ -374,10 +374,23 @@
                 name: `${curve.t}°C`, hoverinfo: 'name', showlegend: false
             }));
 
-            traces.push({
+            let limitTrace = {
                 x: [1400, 2200], y: [4000, 4000], mode: 'lines',
                 line: { color: '#0f172a', width: 3 }, name: 'Limite', hoverinfo: 'none', showlegend: false
-            });
+            };
+
+            if (chartDef.limitEnvelope && chartDef.limitEnvelope.length > 0) {
+                limitTrace = {
+                    x: chartDef.limitEnvelope.map(p => p.x),
+                    y: chartDef.limitEnvelope.map(p => p.y),
+                    mode: 'lines',
+                    line: { color: '#0f172a', width: 4 },
+                    name: 'Domaine Approuvé',
+                    hoverinfo: 'none',
+                    showlegend: false
+                };
+            }
+            traces.push(limitTrace);
 
             traces.push({
                 x: [finalMass, finalMass, 1400], y: [-1000, finalAlt, finalAlt],

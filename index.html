@@ -337,38 +337,16 @@
         }
 
         function isPointInEnvelope(x, y, envelope) {
-            if (!envelope || envelope.length < 2) return true;
-            let intersectionsY = [];
-            for(let i=0; i<envelope.length-1; i++) {
-                let p1 = envelope[i], p2 = envelope[i+1];
-                let minX = Math.min(p1.x, p2.x), maxX = Math.max(p1.x, p2.x);
-                if (x >= minX && x <= maxX) {
-                    if (maxX === minX) intersectionsY.push(Math.max(p1.y, p2.y));
-                    else intersectionsY.push(p1.y + (x - p1.x) * (p2.y - p1.y) / (p2.x - p1.x));
-                }
+            if (!envelope || envelope.length < 3) return true;
+            let inside = false;
+            for (let i = 0, j = envelope.length - 1; i < envelope.length; j = i++) {
+                let xi = envelope[i].x, yi = envelope[i].y;
+                let xj = envelope[j].x, yj = envelope[j].y;
+                let intersect = ((yi > y) != (yj > y))
+                    && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
             }
-            if (intersectionsY.length === 0) {
-                let closestPt = envelope.reduce((prev, curr) => Math.abs(curr.x - x) < Math.abs(prev.x - x) ? curr : prev);
-                intersectionsY.push(closestPt.y);
-            }
-            if (y > Math.max(...intersectionsY)) return false;
-
-            let intersectionsX = [];
-            for(let i=0; i<envelope.length-1; i++) {
-                let p1 = envelope[i], p2 = envelope[i+1];
-                let minY = Math.min(p1.y, p2.y), maxY = Math.max(p1.y, p2.y);
-                if (y >= minY && y <= maxY) {
-                    if (maxY === minY) intersectionsX.push(Math.max(p1.x, p2.x));
-                    else intersectionsX.push(p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y));
-                }
-            }
-            if (intersectionsX.length === 0) {
-                let closestPt = envelope.reduce((prev, curr) => Math.abs(curr.y - y) < Math.abs(prev.y - y) ? curr : prev);
-                intersectionsX.push(closestPt.x);
-            }
-            if (x > Math.max(...intersectionsX)) return false;
-
-            return true;
+            return inside;
         }
 
         // ================= DRAW / UI =================

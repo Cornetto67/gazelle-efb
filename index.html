@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gazelle EFB - Performances</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { touch-action: pan-y; }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .slider-thumb:active::-webkit-slider-thumb { background: #1d4ed8; }
+        .slider-thumb::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 h-screen w-screen overflow-hidden flex flex-col font-sans">
+    <header class="bg-slate-800 text-white p-4 shadow-md flex justify-between items-center z-20">
+        <div class="flex items-center gap-3">
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            <h1 class="text-xl font-bold tracking-wide">Gazelle EFB</h1>
+        </div>
+        <div class="text-sm font-semibold bg-slate-700 px-3 py-1 rounded-full border border-slate-600">SA 342 M1</div>
+    </header>
+
+    <div class="flex-1 flex flex-row overflow-hidden relative">
+        <div class="w-1/3 min-w-[340px] max-w-[420px] bg-white shadow-[4px_0_15px_rgba(0,0,0,0.05)] z-10 flex flex-col overflow-y-auto">
+            <div class="p-5 flex-1 flex flex-col gap-5">
+                
+                <!-- Sélection de l'Abaque -->
+                <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Configuration Machine</label>
+                    
+                    <select id="selectPerf" class="w-full border-2 border-slate-200 rounded p-2 mb-2 bg-white text-sm font-bold text-slate-800 focus:border-blue-500 outline-none">
+                        <option value="HES">Plafond Vol Stationnaire H.E.S.</option>
+                        <option value="DES">Plafond Vol Stationnaire D.E.S.</option>
+                        <option value="TAC">Plafond Vol Tactique</option>
+                    </select>
+                    
+                    <select id="selectConfig" class="w-full border border-slate-200 rounded p-2 bg-white text-sm font-medium text-slate-700 focus:border-blue-500 outline-none">
+                        <!-- Rempli par le script -->
+                    </select>
+                    
+                    <div class="mt-3 pt-3 border-t border-slate-200 text-xs text-slate-600">
+                        <span class="font-bold text-slate-700 block mb-1">Conditions appliquées :</span>
+                        <ul id="conditionsList" class="list-disc pl-5 space-y-0.5 text-blue-800 font-medium"></ul>
+                        <div class="mt-2 text-right italic text-slate-400 font-semibold" id="plancheRef"></div>
+                    </div>
+                </div>
+
+                <!-- Toggle Mode -->
+                <div class="bg-slate-100 p-1 rounded-lg flex gap-1">
+                    <button id="btnModeAlt" class="flex-1 py-2 text-sm font-bold bg-white text-blue-700 rounded shadow-sm border border-slate-200 transition-all">Chercher Plafond</button>
+                    <button id="btnModeMass" class="flex-1 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 rounded transition-all">Chercher Masse Max</button>
+                </div>
+
+                <div class="h-px bg-gray-100"></div>
+
+                <!-- Input: Température (Toujours visible) -->
+                <div>
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="block text-sm font-bold text-gray-700">Temp. Extérieure</label>
+                        <div class="text-right">
+                            <span id="tempValue" class="text-2xl font-black text-red-500">20</span>
+                            <span class="text-sm font-medium text-gray-500">°C</span>
+                        </div>
+                    </div>
+                    <input type="range" id="tempInput" min="-40" max="50" step="1" value="20" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    <div class="flex justify-between text-xs text-gray-400 mt-2 font-medium">
+                        <span>-40°C</span><span>+50°C</span>
+                    </div>
+                </div>
+
+                <!-- Input: Masse (Visible en Mode Altitude) -->
+                <div id="blockInputMass">
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="block text-sm font-bold text-gray-700">Masse de l'appareil</label>
+                        <div class="text-right">
+                            <span id="massValue" class="text-2xl font-black text-blue-600">1900</span>
+                            <span class="text-sm font-medium text-gray-500">kg</span>
+                        </div>
+                    </div>
+                    <input type="range" id="massInput" min="1400" max="2200" step="10" value="1900" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    <div class="flex justify-between text-xs text-gray-400 mt-2 font-medium">
+                        <span>1400 kg</span><span>2200 kg</span>
+                    </div>
+                </div>
+
+                <!-- Input: Altitude (Visible en Mode Masse) -->
+                <div id="blockInputAlt" class="hidden">
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="block text-sm font-bold text-gray-700">Altitude de la DZ</label>
+                        <div class="text-right">
+                            <span id="altValue" class="text-2xl font-black text-blue-600">2000</span>
+                            <span class="text-sm font-medium text-gray-500">m</span>
+                        </div>
+                    </div>
+                    <input type="range" id="altInput" min="-1000" max="4000" step="50" value="2000" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    <div class="flex justify-between text-xs text-gray-400 mt-2 font-medium">
+                        <span>-1000 m</span><span>4000 m (Limite)</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Results area -->
+            <div class="bg-blue-50 p-6 border-t border-blue-100">
+                <h3 id="resultTitle" class="text-xs font-bold text-blue-800 uppercase tracking-widest mb-4">Plafond Calculé</h3>
+                <div class="flex flex-col gap-3">
+                    <div class="flex justify-between items-end bg-white p-3 rounded-lg shadow-sm border border-blue-100 relative">
+                        <span id="resultLabel" class="text-gray-600 font-medium">Altitude max</span>
+                        <div id="capWarning" class="absolute -top-3 right-2 bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded hidden border border-amber-200 shadow-sm">
+                            LIMITE ATTEINTE
+                        </div>
+                        <div>
+                            <span id="resultValMain" class="text-3xl font-black text-gray-800">--</span>
+                            <span id="resultUnitMain" class="text-gray-500 font-medium ml-1">m</span>
+                        </div>
+                    </div>
+                    <div id="resultSecondaryBlock" class="flex justify-between items-end px-2">
+                        <span class="text-gray-500 text-sm">Équivalent</span>
+                        <div>
+                            <span id="resultValSec" class="text-lg font-bold text-gray-600">--</span>
+                            <span class="text-gray-400 text-sm ml-1">ft</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 bg-white relative" id="chartContainer"></div>
+    </div>
+
+    <!-- Base de données (Modifiable par l'utilisateur) -->
+    <script src="data.js"></script>
+
+    <script>
+        window.onerror = function(msg) {
+            document.getElementById('resultValMain').innerHTML = '<span class="text-red-500">ERR</span>';
+        };
+
+        // BASE DE DONNÉES DES ABAQUES (Maintenant chargée depuis data.js)
+        // La variable 'chartsDatabase' est déclarée dans data.js
+
+        let currentMode = 'ALT'; // 'ALT' or 'MASS'
+        let currentChartId = "HES_ARME";
+
+        // DOM Elements
+        const selectPerf = document.getElementById('selectPerf');
+        const selectConfig = document.getElementById('selectConfig');
+        const conditionsList = document.getElementById('conditionsList');
+        const plancheRef = document.getElementById('plancheRef');
+
+        const btnModeAlt = document.getElementById('btnModeAlt');
+        const btnModeMass = document.getElementById('btnModeMass');
+        const blockInputMass = document.getElementById('blockInputMass');
+        const blockInputAlt = document.getElementById('blockInputAlt');
+        
+        const massInput = document.getElementById('massInput');
+        const tempInput = document.getElementById('tempInput');
+        const altInput = document.getElementById('altInput');
+        const massValue = document.getElementById('massValue');
+        const tempValue = document.getElementById('tempValue');
+        const altValue = document.getElementById('altValue');
+        
+        const resultTitle = document.getElementById('resultTitle');
+        const resultLabel = document.getElementById('resultLabel');
+        const resultValMain = document.getElementById('resultValMain');
+        const resultUnitMain = document.getElementById('resultUnitMain');
+        const resultSecondaryBlock = document.getElementById('resultSecondaryBlock');
+        const resultValSec = document.getElementById('resultValSec');
+        const capWarning = document.getElementById('capWarning');
+        const chartContainer = document.getElementById('chartContainer');
+
+        // ================= CONFIGURATION SELECTORS =================
+        
+        function populateTypes() {
+            const types = {};
+            for (const data of Object.values(chartsDatabase)) {
+                if (!types[data.type]) types[data.type] = data.typeLabel || data.type;
+            }
+            selectPerf.innerHTML = '';
+            for (const [typeKey, typeName] of Object.entries(types)) {
+                const option = document.createElement('option');
+                option.value = typeKey;
+                option.textContent = typeName;
+                selectPerf.appendChild(option);
+            }
+            populateConfigs();
+        }
+
+        function populateConfigs() {
+            const perfType = selectPerf.value;
+            selectConfig.innerHTML = '';
+            for (const [id, data] of Object.entries(chartsDatabase)) {
+                if(data.type === perfType) {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = data.configLabel;
+                    selectConfig.appendChild(option);
+                }
+            }
+            updateActiveChart();
+        }
+
+        function updateActiveChart() {
+            currentChartId = selectConfig.value;
+            const chartDef = chartsDatabase[currentChartId];
+            
+            // Update UI Info
+            conditionsList.innerHTML = chartDef.conditions.map(c => `<li>- ${c}</li>`).join('');
+            plancheRef.textContent = chartDef.planche;
+            
+            drawChart();
+        }
+
+        selectPerf.addEventListener('change', populateConfigs);
+        selectConfig.addEventListener('change', updateActiveChart);
+
+        // ================= MATH / INTERPOLATION =================
+
+        function getAltitudeForCurve(curvePts, mass) {
+            const pts = [...curvePts].sort((a,b) => a.x - b.x);
+            if (mass <= pts[0].x) return pts[0].y;
+            if (mass >= pts[pts.length - 1].x) return pts[pts.length - 1].y;
+            for (let i = 0; i < pts.length - 1; i++) {
+                if (mass >= pts[i].x && mass <= pts[i+1].x) {
+                    const diffX = pts[i+1].x - pts[i].x;
+                    if (diffX === 0) return pts[i].y;
+                    return pts[i].y + ((mass - pts[i].x) / diffX) * (pts[i+1].y - pts[i].y);
+                }
+            }
+            return 0;
+        }
+
+        function getMassForCurve(curvePts, altitude) {
+            const pts = [...curvePts].sort((a,b) => a.x - b.x);
+            if (altitude >= pts[0].y) return pts[0].x; 
+            if (altitude <= pts[pts.length - 1].y) return pts[pts.length - 1].x; 
+            for (let i = 0; i < pts.length - 1; i++) {
+                const y1 = pts[i].y;
+                const y2 = pts[i+1].y;
+                if ((altitude <= y1 && altitude >= y2) || (altitude >= y1 && altitude <= y2)) {
+                    const diffY = y2 - y1;
+                    if (diffY === 0) return pts[i].x;
+                    return pts[i].x + ((altitude - y1) / diffY) * (pts[i+1].x - pts[i].x);
+                }
+            }
+            return pts[pts.length - 1].x;
+        }
+
+        function getCalculatedValue(temp, inputValue) {
+            const activeData = chartsDatabase[currentChartId].curves;
+            if(!activeData || activeData.length === 0) return null;
+
+            const sortedCurves = [...activeData].sort((a,b) => a.temp - b.temp);
+            
+            let val1, val2, temp1, temp2;
+
+            if (temp <= sortedCurves[0].temp) {
+                return currentMode === 'ALT' 
+                    ? getAltitudeForCurve(sortedCurves[0].points, inputValue)
+                    : getMassForCurve(sortedCurves[0].points, inputValue);
+            }
+            if (temp >= sortedCurves[sortedCurves.length - 1].temp) {
+                return currentMode === 'ALT'
+                    ? getAltitudeForCurve(sortedCurves[sortedCurves.length - 1].points, inputValue)
+                    : getMassForCurve(sortedCurves[sortedCurves.length - 1].points, inputValue);
+            }
+
+            for (let i = 0; i < sortedCurves.length - 1; i++) {
+                if (temp >= sortedCurves[i].temp && temp <= sortedCurves[i+1].temp) {
+                    temp1 = sortedCurves[i].temp;
+                    temp2 = sortedCurves[i+1].temp;
+                    
+                    if (currentMode === 'ALT') {
+                        val1 = getAltitudeForCurve(sortedCurves[i].points, inputValue);
+                        val2 = getAltitudeForCurve(sortedCurves[i+1].points, inputValue);
+                    } else {
+                        val1 = getMassForCurve(sortedCurves[i].points, inputValue);
+                        val2 = getMassForCurve(sortedCurves[i+1].points, inputValue);
+                    }
+                    
+                    const diffT = temp2 - temp1;
+                    if (diffT === 0) return val1;
+                    return val1 + ((temp - temp1) / diffT) * (val2 - val1);
+                }
+            }
+            return null;
+        }
+
+        // ================= DRAW / UI =================
+
+        function drawChart() {
+            if (typeof Plotly === 'undefined') return;
+
+            const chartDef = chartsDatabase[currentChartId];
+            const activeData = chartDef.curves;
+
+            // Si l'abaque n'est pas encore numérisé
+            if(!activeData || activeData.length === 0) {
+                resultValMain.innerHTML = '<span class="text-xl text-amber-500">N/A</span>';
+                resultValSec.textContent = "--";
+                Plotly.react(chartContainer, [], {
+                    title: chartDef.title + ' (Non Numérisé)',
+                    annotations: [{ text: "Cet abaque doit encore être numérisé via l'outil Digitizer", showarrow: false, font: {size: 16, color: '#94a3b8'} }],
+                    xaxis: { range: [1400, 2200], visible: false },
+                    yaxis: { range: [-1000, 6000], visible: false },
+                    plot_bgcolor: '#f8fafc', paper_bgcolor: 'transparent'
+                }, { displayModeBar: false });
+                return;
+            }
+
+            const temp = parseFloat(tempInput.value);
+            let finalMass = 1400;
+            let finalAlt = 0;
+            let isCapped = false;
+
+            if (currentMode === 'ALT') {
+                finalMass = parseFloat(massInput.value);
+                let rawAlt = getCalculatedValue(temp, finalMass);
+                finalAlt = rawAlt;
+                if(finalAlt > 4000) { finalAlt = 4000; isCapped = true; }
+                
+                resultTitle.textContent = "Plafond Calculé";
+                resultLabel.textContent = "Altitude max";
+                resultValMain.textContent = Math.round(finalAlt);
+                resultUnitMain.textContent = "m";
+                resultSecondaryBlock.classList.remove('hidden');
+                resultValSec.textContent = Math.round(finalAlt * 3.28084);
+            } else {
+                finalAlt = parseFloat(altInput.value);
+                if(finalAlt > 4000) isCapped = true; 
+
+                let rawMass = getCalculatedValue(temp, finalAlt);
+                finalMass = rawMass;
+                if(finalMass > 2200) { finalMass = 2200; isCapped = true; }
+                if(finalMass < 1400) { finalMass = 1400; isCapped = true; }
+
+                resultTitle.textContent = "Masse Maximale";
+                resultLabel.textContent = "Masse autorisée";
+                resultValMain.textContent = Math.round(finalMass);
+                resultUnitMain.textContent = "kg";
+                resultSecondaryBlock.classList.add('hidden');
+            }
+
+            if(isCapped) capWarning.classList.remove('hidden');
+            else capWarning.classList.add('hidden');
+
+            const plotlyCurves = activeData.map(curve => {
+                const sortedPts = [...curve.points].sort((a,b) => a.x - b.x);
+                return { t: curve.temp, x: sortedPts.map(p=>p.x), y: sortedPts.map(p=>p.y) };
+            });
+
+            const traces = plotlyCurves.map(curve => ({
+                x: curve.x, y: curve.y, mode: 'lines', line: { color: '#cbd5e1', width: 2 },
+                name: `${curve.t}°C`, hoverinfo: 'name', showlegend: false
+            }));
+
+            traces.push({
+                x: [1400, 2200], y: [4000, 4000], mode: 'lines',
+                line: { color: '#0f172a', width: 3 }, name: 'Limite', hoverinfo: 'none', showlegend: false
+            });
+
+            traces.push({
+                x: [finalMass, finalMass, 1400], y: [-1000, finalAlt, finalAlt],
+                mode: 'lines', line: { color: '#ef4444', width: 2, dash: 'dashdot' }, name: 'Lecture', hoverinfo: 'none', showlegend: false
+            });
+            
+            traces.push({
+                x: [finalMass], y: [finalAlt], mode: 'markers',
+                marker: { color: '#ef4444', size: 12, line: {color: 'white', width: 2} },
+                name: 'Point', hovertemplate: `Masse: ${Math.round(finalMass)} kg<br>Altitude: ${Math.round(finalAlt)} m<extra></extra>`
+            });
+
+            const layout = {
+                title: { text: chartDef.title, font: { family: 'sans-serif', size: 16, color: '#475569' }, x: 0.05, y: 0.95 },
+                xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, 2200], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
+                yaxis: { title: chartDef.yAxisLabel || 'ALTITUDE PRESSION (m)', range: [-1000, 6000], dtick: 1000, gridcolor: '#e2e8f0', zeroline: true },
+                margin: { l: 70, r: 40, t: 80, b: 60 }, plot_bgcolor: '#ffffff', paper_bgcolor: 'transparent',
+                hovermode: 'closest', dragmode: false
+            };
+
+            Plotly.react(chartContainer, traces, layout, { responsive: true, displayModeBar: false });
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            if (mode === 'ALT') {
+                btnModeAlt.className = "flex-1 py-2 text-sm font-bold bg-white text-blue-700 rounded shadow-sm border border-slate-200 transition-all";
+                btnModeMass.className = "flex-1 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 rounded transition-all";
+                blockInputMass.classList.remove('hidden');
+                blockInputAlt.classList.add('hidden');
+            } else {
+                btnModeMass.className = "flex-1 py-2 text-sm font-bold bg-white text-blue-700 rounded shadow-sm border border-slate-200 transition-all";
+                btnModeAlt.className = "flex-1 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 rounded transition-all";
+                blockInputAlt.classList.remove('hidden');
+                blockInputMass.classList.add('hidden');
+            }
+            drawChart();
+        }
+
+        btnModeAlt.addEventListener('click', () => setMode('ALT'));
+        btnModeMass.addEventListener('click', () => setMode('MASS'));
+        massInput.addEventListener('input', (e) => { massValue.textContent = e.target.value; drawChart(); });
+        altInput.addEventListener('input', (e) => { altValue.textContent = e.target.value; drawChart(); });
+        tempInput.addEventListener('input', (e) => { tempValue.textContent = e.target.value; drawChart(); });
+
+        // Init
+        populateTypes();
+        if(typeof Plotly !== 'undefined') drawChart();
+        else window.addEventListener('load', drawChart);
+        window.addEventListener('resize', () => { if(typeof Plotly !== 'undefined') Plotly.Plots.resize(chartContainer); });
+    </script>
+</body>
+</html>

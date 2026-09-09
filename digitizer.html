@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outil de Numérisation d'Abaques - Gazelle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #canvasContainer { cursor: crosshair; }
+        canvas { display: block; }
+    </style>
+</head>
+<body class="bg-slate-100 p-6 flex gap-6 h-screen font-sans overflow-hidden">
+    
+    <!-- Sidebar -->
+    <div class="w-1/3 min-w-[350px] bg-white rounded-xl shadow-lg flex flex-col overflow-hidden border border-slate-200">
+        <div class="p-6 bg-slate-800 text-white">
+            <h1 class="text-xl font-bold">Numériseur d'Abaque</h1>
+            <p class="text-sm text-slate-300 mt-1">Extraction de données vers JSON</p>
+        </div>
+        
+        <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto">
+            
+            <!-- Step 1: Load Image -->
+            <div>
+                <h2 class="font-bold text-slate-700 mb-2 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
+                    Charger l'image
+                </h2>
+                <input type="file" id="imageLoader" accept="image/*" class="text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 w-full cursor-pointer">
+            </div>
+
+            <div class="h-px bg-slate-200"></div>
+
+            <!-- Step 2: Calibration -->
+            <div>
+                <h2 class="font-bold text-slate-700 mb-2 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
+                    Étalonnage de la grille
+                </h2>
+                
+                <div class="grid grid-cols-2 gap-3 mb-3 text-sm">
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">X Origine (Masse min)</label>
+                        <input type="number" id="valOx" value="1400" class="border rounded p-2 w-full focus:outline-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Y Origine (Alt min)</label>
+                        <input type="number" id="valOy" value="-1000" class="border rounded p-2 w-full focus:outline-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">X Max (Masse max)</label>
+                        <input type="number" id="valXx" value="2200" class="border rounded p-2 w-full focus:outline-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Y Max (Alt max)</label>
+                        <input type="number" id="valYy" value="6000" class="border rounded p-2 w-full focus:outline-blue-500">
+                    </div>
+                </div>
+                
+                <div id="calibInstruction" class="text-sm font-medium text-amber-600 bg-amber-50 p-3 rounded border border-amber-200 mb-3 hidden">
+                    Cliquez sur l'origine (en bas à gauche).
+                </div>
+
+                <button id="btnCalibrate" class="w-full bg-slate-700 text-white font-medium py-2 rounded hover:bg-slate-800 transition-colors">
+                    Démarrer l'étalonnage
+                </button>
+            </div>
+
+            <div class="h-px bg-slate-200"></div>
+
+            <!-- Step 3: Tracing -->
+            <div id="tracingSection" class="opacity-40 pointer-events-none transition-opacity">
+                <h2 class="font-bold text-slate-700 mb-2 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+                    Tracé des courbes
+                </h2>
+                
+                <div class="flex gap-2 mb-3">
+                    <div class="flex-1">
+                        <label class="block text-xs text-slate-500 mb-1">Température de la courbe (°C)</label>
+                        <input type="number" id="currentTemp" placeholder="ex: 20" class="border rounded p-2 w-full focus:outline-blue-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button id="btnSaveCurve" class="bg-green-600 text-white px-4 py-2 rounded font-medium hover:bg-green-700 transition-colors">
+                            Sauvegarder
+                        </button>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mb-2">Cliquez sur plusieurs points le long de la courbe sélectionnée. Puis cliquez sur Sauvegarder.</p>
+                
+                <div class="max-h-32 overflow-y-auto border rounded bg-slate-50 p-2">
+                    <ul id="curveList" class="text-sm text-slate-700 space-y-1">
+                        <li class="text-slate-400 italic">Aucune courbe enregistrée.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Export -->
+            <div class="flex-1 flex flex-col min-h-[150px]">
+                <h2 class="font-bold text-slate-700 mb-2 flex items-center justify-between">
+                    JSON Généré
+                    <button id="btnCopy" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded">Copier</button>
+                </h2>
+                <textarea id="jsonOutput" class="flex-1 w-full border rounded p-2 text-xs font-mono bg-slate-50 focus:outline-blue-500" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas Area -->
+    <div class="flex-1 bg-slate-300 rounded-xl shadow-inner overflow-auto relative flex justify-center items-center p-4 border border-slate-400" id="wrapper">
+        <div id="canvasContainer" class="relative inline-block shadow-2xl bg-white">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let img = new Image();
+        
+        let state = 'IDLE'; // IDLE, CALIB_O, CALIB_X, CALIB_Y, TRACE
+        let calib = { O: null, X: null, Y: null };
+        let realVals = { Ox:0, Oy:0, Xx:0, Yy:0 };
+        
+        let curves = [];
+        let currentPoints = []; // pixels
+        
+        // UI Elements
+        const btnCalibrate = document.getElementById('btnCalibrate');
+        const calibInstr = document.getElementById('calibInstruction');
+        const tracingSec = document.getElementById('tracingSection');
+        const btnSaveCurve = document.getElementById('btnSaveCurve');
+        const txtTemp = document.getElementById('currentTemp');
+        const curveList = document.getElementById('curveList');
+        const jsonOut = document.getElementById('jsonOutput');
+
+        // 1. Load Image
+        document.getElementById('imageLoader').addEventListener('change', function(e){
+            const reader = new FileReader();
+            reader.onload = function(event){
+                img.onload = function(){
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    resetAll();
+                    draw();
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        function resetAll() {
+            state = 'IDLE';
+            calib = { O: null, X: null, Y: null };
+            curves = [];
+            currentPoints = [];
+            tracingSec.classList.add('opacity-40', 'pointer-events-none');
+            calibInstr.classList.add('hidden');
+            btnCalibrate.textContent = "Démarrer l'étalonnage";
+            updateJSON();
+            updateList();
+        }
+
+        // 2. Calibration
+        btnCalibrate.addEventListener('click', () => {
+            if(!img.src) return alert("Chargez une image d'abord !");
+            realVals = {
+                Ox: parseFloat(document.getElementById('valOx').value),
+                Oy: parseFloat(document.getElementById('valOy').value),
+                Xx: parseFloat(document.getElementById('valXx').value),
+                Yy: parseFloat(document.getElementById('valYy').value)
+            };
+            calib = { O: null, X: null, Y: null };
+            currentPoints = [];
+            state = 'CALIB_O';
+            btnCalibrate.textContent = "Étalonnage en cours...";
+            calibInstr.classList.remove('hidden');
+            calibInstr.innerHTML = "Étape 1/3 : Cliquez précisément sur l'<b>origine</b> de la grille (en bas à gauche).";
+            draw();
+        });
+
+        // Canvas Click Handler
+        canvas.addEventListener('mousedown', function(e) {
+            if(state === 'IDLE') return;
+            
+            const rect = canvas.getBoundingClientRect();
+            // Scale correctly if canvas CSS size differs from raw pixel size (though we didn't set CSS w/h here)
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            if (state === 'CALIB_O') {
+                calib.O = {px: x, py: y};
+                state = 'CALIB_X';
+                calibInstr.innerHTML = "Étape 2/3 : Cliquez sur l'extrémité de l'axe des <b>Masse (X Max)</b>.";
+            } 
+            else if (state === 'CALIB_X') {
+                calib.X = {px: x, py: y};
+                state = 'CALIB_Y';
+                calibInstr.innerHTML = "Étape 3/3 : Cliquez sur l'extrémité de l'axe des <b>Altitudes (Y Max)</b>.";
+            }
+            else if (state === 'CALIB_Y') {
+                calib.Y = {px: x, py: y};
+                state = 'TRACE';
+                calibInstr.classList.add('hidden');
+                btnCalibrate.textContent = "Étalonnage terminé";
+                tracingSec.classList.remove('opacity-40', 'pointer-events-none');
+                txtTemp.focus();
+            }
+            else if (state === 'TRACE') {
+                // Add point to current curve
+                currentPoints.push({px: x, py: y});
+            }
+            draw();
+        });
+
+        // 3. Save Curve
+        btnSaveCurve.addEventListener('click', () => {
+            const temp = document.getElementById('currentTemp').value;
+            if(!temp || currentPoints.length === 0) {
+                return alert("Veuillez saisir une température et cliquer des points.");
+            }
+
+            // Convert pixels to real values
+            const realPoints = currentPoints.map(pt => pxToReal(pt.px, pt.py));
+            
+            curves.push({
+                temp: parseFloat(temp),
+                points: realPoints
+            });
+
+            // Sort curves by temperature descending
+            curves.sort((a,b) => b.temp - a.temp);
+
+            currentPoints = [];
+            document.getElementById('currentTemp').value = '';
+            updateList();
+            updateJSON();
+            draw();
+        });
+
+        function pxToReal(px, py) {
+            // X interpolation
+            const xRatio = (px - calib.O.px) / (calib.X.px - calib.O.px);
+            const realX = realVals.Ox + xRatio * (realVals.Xx - realVals.Ox);
+            
+            // Y interpolation (Canvas Y is inverted, 0 is at the top)
+            const yRatio = (calib.O.py - py) / (calib.O.py - calib.Y.py);
+            const realY = realVals.Oy + yRatio * (realVals.Yy - realVals.Oy);
+
+            return {
+                x: Math.round(realX),
+                y: Math.round(realY)
+            };
+        }
+
+        function realToPx(rx, ry) {
+            if(!calib.O || !calib.X || !calib.Y) return {px:0, py:0};
+            const xRatio = (rx - realVals.Ox) / (realVals.Xx - realVals.Ox);
+            const px = calib.O.px + xRatio * (calib.X.px - calib.O.px);
+
+            const yRatio = (ry - realVals.Oy) / (realVals.Yy - realVals.Oy);
+            const py = calib.O.py - yRatio * (calib.O.py - calib.Y.py);
+            return {px, py};
+        }
+
+        // 4. Drawing function
+        function draw() {
+            if(!img.src) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+
+            // Draw Calibration marks
+            if (calib.O) drawMark(calib.O.px, calib.O.py, 'blue');
+            if (calib.X) drawMark(calib.X.px, calib.X.py, 'blue');
+            if (calib.Y) drawMark(calib.Y.px, calib.Y.py, 'blue');
+
+            // Draw Axes lines if calibrated
+            if (calib.O && calib.X) {
+                ctx.beginPath(); ctx.moveTo(calib.O.px, calib.O.py); ctx.lineTo(calib.X.px, calib.X.py); ctx.strokeStyle='blue'; ctx.stroke();
+            }
+            if (calib.O && calib.Y) {
+                ctx.beginPath(); ctx.moveTo(calib.O.px, calib.O.py); ctx.lineTo(calib.Y.px, calib.Y.py); ctx.strokeStyle='blue'; ctx.stroke();
+            }
+
+            // Draw Saved Curves
+            curves.forEach(c => {
+                ctx.beginPath();
+                c.points.forEach((pt, i) => {
+                    const pxl = realToPx(pt.x, pt.y);
+                    if(i===0) ctx.moveTo(pxl.px, pxl.py);
+                    else ctx.lineTo(pxl.px, pxl.py);
+                });
+                ctx.strokeStyle = '#10b981'; // green-500
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw dots
+                c.points.forEach(pt => {
+                    const pxl = realToPx(pt.x, pt.y);
+                    drawMark(pxl.px, pxl.py, '#10b981', 3);
+                });
+            });
+
+            // Draw Current Tracing
+            if (currentPoints.length > 0) {
+                ctx.beginPath();
+                currentPoints.forEach((pt, i) => {
+                    if(i===0) ctx.moveTo(pt.px, pt.py);
+                    else ctx.lineTo(pt.px, pt.py);
+                    drawMark(pt.px, pt.py, 'red', 4);
+                });
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        function drawMark(x, y, color, size = 5) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function updateList() {
+            curveList.innerHTML = '';
+            if(curves.length === 0) {
+                curveList.innerHTML = '<li class="text-slate-400 italic">Aucune courbe enregistrée.</li>';
+                return;
+            }
+            curves.forEach((c, idx) => {
+                const li = document.createElement('li');
+                li.className = "flex justify-between items-center bg-white p-1 rounded border mb-1";
+                li.innerHTML = `<span>Courbe <b>${c.temp}°C</b> (${c.points.length} pts)</span>
+                                <button class="text-red-500 hover:text-red-700 font-bold px-2" onclick="deleteCurve(${idx})">×</button>`;
+                curveList.appendChild(li);
+            });
+        }
+
+        window.deleteCurve = function(idx) {
+            curves.splice(idx, 1);
+            updateList();
+            updateJSON();
+            draw();
+        }
+
+        function updateJSON() {
+            jsonOut.value = JSON.stringify(curves, null, 2);
+        }
+
+        document.getElementById('btnCopy').addEventListener('click', () => {
+            jsonOut.select();
+            document.execCommand('copy');
+            alert('JSON copié dans le presse-papier !');
+        });
+
+    </script>
+</body>
+</html>

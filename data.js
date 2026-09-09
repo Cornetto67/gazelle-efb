@@ -3,8 +3,7 @@
 // =========================================================================
 // MODE D'EMPLOI POUR AJOUTER/MODIFIER UNE COURBE :
 // 1. Utilisez "digitizer.html" pour obtenir le JSON de votre courbe.
-// 2. Collez-le dans les crochets "limitEnvelope: [],
-        curves: [...]" du bloc correspondant.
+// 2. Collez-le dans les crochets "limitEnvelope: []" ou "curves: []" du bloc correspondant.
 // 
 // POUR AJOUTER UNE TOUTE NOUVELLE CATÉGORIE (Ex: Masse max au décollage) :
 // Copiez-collez un bloc entier (ex: de "HES_ARME": { ... } ) et changez :
@@ -48,7 +47,6 @@ const chartsDatabase = {
         planche: "Planche 9A",
         xAxisLabel: "MASSE (kg)",
         yAxisLabel: "ALTITUDE PRESSION (m)",
-        limitEnvelope: [],
         limitEnvelope: [],
         curves: [
           {"temp": 50, "points": [{"x": 2199, "y": 457}, {"x": 2084, "y": 870}, {"x": 1955, "y": 1376}, {"x": 1804, "y": 2016}, {"x": 1681, "y": 2549}, {"x": 1567, "y": 3082}, {"x": 1457, "y": 3615}, {"x": 1401, "y": 3908}]},
@@ -127,4 +125,3 @@ const chartsDatabase = {
         curves: []
     }
 };
-

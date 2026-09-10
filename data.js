@@ -120,18 +120,7 @@ const chartsDatabase = {
           {"temp": -40, "points": [{"x": 2201, "y": 3445}, {"x": 2143, "y": 3675}, {"x": 2086, "y": 3881}, {"x": 2008, "y": 4163}, {"x": 1924, "y": 4509}, {"x": 1836, "y": 4855}, {"x": 1751, "y": 5214}, {"x": 1673, "y": 5547}, {"x": 1579, "y": 5983}]}
         ]
     },
-    "DES_LISSE": {
-        title: "Abaque 8.6 - PLAFOND D.E.S.",
-        type: "DES",
-        typeLabel: "Plafond Vol Stationnaire D.E.S.",
-        configLabel: "Appareil Lisse",
-        conditions: ["APPAREIL LISSE", "SANS TUBE POLYVALENT", "AVEC DDJ"],
-        planche: "Planche 10A",
-        xAxisLabel: "MASSE (kg)",
-        yAxisLabel: "ALTITUDE PRESSION (m)",
-        limitEnvelope: [],
-        curves: []
-    },
+    
 
     // ================== VOL TACTIQUE ==================
     "TAC_ARME": {

@@ -288,7 +288,7 @@ function drawCharts() {
             resEl.innerHTML = '<span class="text-amber-500">N/A</span>';
             Plotly.react(plotDiv, [], {
                 title: 'Abaque non numérisé',
-                xaxis: { range: [1400, 2200], visible: false },
+                xaxis: { range: [1400, 2250], visible: false },
                 yaxis: { range: [-1000, 6000], visible: false },
                 plot_bgcolor: '#f8fafc', paper_bgcolor: 'transparent'
             }, { displayModeBar: false });
@@ -331,13 +331,17 @@ function drawCharts() {
             });
         }
 
+        // On borne la position du point rouge pour le dessin (le garde visible s'il dépasse l'écran)
+        let plotMass = Math.min(finalMass, 2245);
+        let plotAlt = Math.max(-1000, Math.min(finalAlt, 6000));
+
         traces.push({
-            x: [finalMass, finalMass, 1400], y: [-1000, finalAlt, finalAlt],
+            x: [plotMass, plotMass, 1400], y: [-1000, plotAlt, plotAlt],
             mode: 'lines', line: { color: '#ef4444', width: 2, dash: 'dashdot' }, hoverinfo: 'none', showlegend: false
         });
         
         traces.push({
-            x: [finalMass], y: [finalAlt], mode: 'markers',
+            x: [plotMass], y: [plotAlt], mode: 'markers',
             marker: { color: '#ef4444', size: 10, line: {color: 'white', width: 2} },
             name: 'Point', hovertemplate: `Masse: ${Math.round(finalMass)} kg<br>Altitude: ${Math.round(finalAlt)} m<extra></extra>`
         });

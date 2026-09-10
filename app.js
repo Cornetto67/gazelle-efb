@@ -488,49 +488,75 @@ function initPannes() {
     const searchInput = document.getElementById('search-pannes');
     if (!searchInput) return;
     
-    searchInput.addEventListener('input', renderPannesList);
-    renderPannesList();
+    searchInput.addEventListener('input', renderAutresPannes);
+    render7Alpha();
+    renderAutresPannes();
 }
 
-function renderPannesList() {
+function render7Alpha() {
+    const container = document.getElementById('panneau-7-alpha');
+    if (!container) return;
+    container.innerHTML = '';
+
+    panneau7Alpha.forEach(voyant => {
+        if (!voyant) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'bg-slate-800 rounded shadow-inner border border-slate-700 h-14';
+            container.appendChild(emptyDiv);
+            return;
+        }
+
+        const btn = document.createElement('button');
+        let colorClasses = '';
+        if (voyant.color === 'red') {
+            colorClasses = 'bg-red-600 hover:bg-red-500 text-white shadow-[0_0_10px_rgba(220,38,38,0.6)]';
+        } else if (voyant.color === 'amber') {
+            colorClasses = 'bg-amber-500 hover:bg-amber-400 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.6)]';
+        } else {
+            colorClasses = 'bg-slate-600 hover:bg-slate-500 text-white';
+        }
+
+        btn.className = 'h-14 rounded-md font-bold text-[10px] uppercase leading-tight border border-white/20 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center text-center p-1 7-alpha-btn ' + colorClasses;
+        btn.innerHTML = voyant.label;
+        btn.onclick = () => loadPdf(voyant.pdf, btn, true);
+        
+        container.appendChild(btn);
+    });
+}
+
+function renderAutresPannes() {
     const searchStr = document.getElementById('search-pannes').value.toLowerCase();
     const listContainer = document.getElementById('list-pannes');
+    if (!listContainer) return;
     listContainer.innerHTML = '';
 
-    // Grouper par catégorie
-    const categories = {};
-    for (const [id, panne] of Object.entries(pannesDatabase)) {
-        if (panne.title.toLowerCase().includes(searchStr) || panne.category.toLowerCase().includes(searchStr)) {
-            if (!categories[panne.category]) categories[panne.category] = [];
-            categories[panne.category].push({ id, ...panne });
-        }
-    }
-
-    for (const [cat, pannes] of Object.entries(categories)) {
-        const catDiv = document.createElement('div');
-        catDiv.className = 'mt-2 mb-1 text-xs font-bold text-slate-400 uppercase tracking-wider';
-        catDiv.textContent = cat;
-        listContainer.appendChild(catDiv);
-
-        pannes.forEach(p => {
+    autresPannes.forEach(p => {
+        if (p.title.toLowerCase().includes(searchStr)) {
             const btn = document.createElement('button');
-            btn.className = 'w-full text-left bg-white border border-slate-200 hover:border-red-400 hover:shadow-sm p-3 rounded-lg transition group';
+            btn.className = 'w-full text-left bg-white border border-slate-200 hover:border-red-400 hover:shadow-sm p-3 rounded-lg transition group list-panne-btn';
             btn.innerHTML = "<div class='font-bold text-slate-700 group-hover:text-red-600 transition'>" + p.title + "</div>";
-            btn.onclick = () => loadPdf(p.pdf, btn);
+            btn.onclick = () => loadPdf(p.pdf, btn, false);
             listContainer.appendChild(btn);
-        });
-    }
+        }
+    });
 }
 
-function loadPdf(pdfUrl, btnElement) {
-    // Mise en surbrillance
-    document.querySelectorAll('#list-pannes button').forEach(b => {
+function loadPdf(pdfUrl, btnElement, is7Alpha) {
+    document.querySelectorAll('.7-alpha-btn').forEach(b => {
+        b.classList.remove('ring-4', 'ring-white', 'z-10');
+    });
+    document.querySelectorAll('.list-panne-btn').forEach(b => {
         b.classList.remove('border-red-500', 'ring-2', 'ring-red-100');
         b.classList.add('border-slate-200');
     });
+
     if (btnElement) {
-        btnElement.classList.remove('border-slate-200');
-        btnElement.classList.add('border-red-500', 'ring-2', 'ring-red-100');
+        if (is7Alpha) {
+            btnElement.classList.add('ring-4', 'ring-white', 'z-10');
+        } else {
+            btnElement.classList.remove('border-slate-200');
+            btnElement.classList.add('border-red-500', 'ring-2', 'ring-red-100');
+        }
     }
 
     const iframe = document.getElementById('pdf-frame');
@@ -539,8 +565,6 @@ function loadPdf(pdfUrl, btnElement) {
     placeholder.classList.add('hidden');
     iframe.classList.remove('hidden');
     
-    // Astuce : On peut utiliser le viewer PDF intégré du navigateur ou PDF.js plus tard.
-    // Pour l'instant, on charge directement l'URL dans l'iframe.
     iframe.src = pdfUrl;
 }
 
@@ -548,4 +572,3 @@ function loadPdf(pdfUrl, btnElement) {
 document.addEventListener('DOMContentLoaded', () => {
     if(typeof initPannes === 'function') initPannes();
 });
-

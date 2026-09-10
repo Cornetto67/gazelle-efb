@@ -150,13 +150,35 @@ const chartsDatabase = {
 };
 
 // =========================================================================
-// PROCEDURES D'URGENCE (PANNES)
+// PANNEAU 7 ALPHA (CWP) & AUTRES PANNES
 // =========================================================================
-const pannesDatabase = {
-    'P_MOTEUR_VOL': { title: 'Panne Moteur en Vol', category: 'Moteur', pdf: 'docs/panne_moteur.pdf' },
-    'P_MOTEUR_STATIO': { title: 'Panne Moteur en Stationnaire', category: 'Moteur', pdf: 'docs/panne_moteur_statio.pdf' },
-    'INCENDIE_SOL': { title: 'Incendie au sol', category: 'Incendie', pdf: 'docs/incendie.pdf' },
-    'HYDRAULIQUE': { title: 'Panne Hydraulique', category: 'Systèmes', pdf: 'docs/hydraulique.pdf' },
-    'BTP': { title: 'Alarme Limaille BTP', category: 'Transmission', pdf: 'docs/btp.pdf' }
-};
+const panneau7Alpha = [
+    // Ligne 1
+    { id: 'P_HUILE_BTP', label: 'P. HUILE<br>B.T.P.', color: 'red', pdf: 'docs/p_huile_btp.pdf' },
+    { id: 'T_HUILE_BTP', label: 'T. HUILE<br>B.T.P.', color: 'amber', pdf: 'docs/t_huile_btp.pdf' },
+    { id: 'P_HUILE_MOT', label: 'P. HUILE<br>MOTEUR', color: 'red', pdf: 'docs/p_huile_mot.pdf' },
+    { id: 'T_HUILE_MOT', label: 'T. HUILE<br>MOTEUR', color: 'amber', pdf: 'docs/t_huile_mot.pdf' },
+    // Ligne 2
+    { id: 'HYD', label: 'HYD', color: 'red', pdf: 'docs/hyd.pdf' },
+    { id: 'LIM_BTP', label: 'LIM<br>B.T.P.', color: 'amber', pdf: 'docs/lim_btp.pdf' },
+    { id: 'LIM_MOT', label: 'LIM<br>MOTEUR', color: 'amber', pdf: 'docs/lim_mot.pdf' },
+    { id: 'REGUL', label: 'REGUL', color: 'amber', pdf: 'docs/regul.pdf' },
+    // Ligne 3
+    { id: 'GENE', label: 'GENE', color: 'amber', pdf: 'docs/gene.pdf' },
+    { id: 'BAT', label: 'BAT', color: 'amber', pdf: 'docs/bat.pdf' },
+    { id: 'POMPE', label: 'POMPE<br>GAV.', color: 'amber', pdf: 'docs/pompe.pdf' },
+    { id: 'FILTRE', label: 'FILTRE<br>CARBU', color: 'amber', pdf: 'docs/filtre.pdf' },
+    // Ligne 4
+    { id: 'JAUGE', label: 'JAUGE', color: 'amber', pdf: 'docs/jauge.pdf' },
+    { id: 'PITOT', label: 'PITOT', color: 'amber', pdf: 'docs/pitot.pdf' },
+    { id: 'PORTE', label: 'PORTES', color: 'amber', pdf: 'docs/portes.pdf' },
+    { id: 'EMBRAY', label: 'EMBRAY', color: 'amber', pdf: 'docs/embrayage.pdf' }
+];
 
+const autresPannes = [
+    { id: 'INCENDIE_SOL', title: 'Incendie au sol', pdf: 'docs/incendie_sol.pdf' },
+    { id: 'INCENDIE_VOL', title: 'Incendie en vol', pdf: 'docs/incendie_vol.pdf' },
+    { id: 'PANNE_MOT_VOL', title: 'Panne moteur en vol', pdf: 'docs/panne_moteur_vol.pdf' },
+    { id: 'PANNE_MOT_STATIO', title: 'Panne moteur en stationnaire', pdf: 'docs/panne_moteur_statio.pdf' },
+    { id: 'GOUVERNE', title: 'Panne de gouverne de direction', pdf: 'docs/gouverne.pdf' }
+];

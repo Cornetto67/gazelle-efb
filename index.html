@@ -92,12 +92,23 @@
 
     <!-- VUE PANNES (Placeholder) -->
     <div id="view-pannes" class="app-view hidden flex-1 flex-row overflow-hidden relative">
-        <div class="w-1/3 min-w-[300px] max-w-[380px] bg-white shadow-[4px_0_15px_rgba(0,0,0,0.05)] z-10 flex flex-col overflow-y-auto">
+        <div class="w-1/2 min-w-[420px] max-w-[600px] bg-white shadow-[4px_0_15px_rgba(0,0,0,0.05)] z-10 flex flex-col overflow-y-auto">
             <div class="p-5 flex-1 flex flex-col gap-4">
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Procédures d'urgence</h3>
                 </div>
-                <input type="text" id="search-pannes" placeholder="Rechercher une panne..." class="w-full border-2 border-slate-200 rounded p-2 mb-2 bg-slate-50 text-slate-800 font-bold focus:border-red-500 outline-none transition">
+                
+                <!-- Zone du 7 Alpha -->
+                <div class="bg-slate-900 p-3 rounded-xl border-4 border-slate-700 shadow-inner mb-2">
+                    <div id="panneau-7-alpha" class="grid grid-cols-4 gap-2">
+                        <!-- Rempli par app.js -->
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 my-2"></div>
+                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Autres pannes et procédures</h4>
+                
+                <input type="text" id="search-pannes" placeholder="Rechercher une procédure..." class="w-full border-2 border-slate-200 rounded p-2 mb-2 bg-slate-50 text-slate-800 font-bold focus:border-red-500 outline-none transition">
                 <div id="list-pannes" class="flex flex-col gap-2 overflow-y-auto pb-6">
                     <!-- Rempli par app.js -->
                 </div>

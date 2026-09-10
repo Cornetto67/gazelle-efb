@@ -1,19 +1,19 @@
-﻿// =========================================================================
-// BASE DE DONNÃ‰ES DES PERFORMANCES GAZELLE (SA 342 M1)
+// =========================================================================
+// BASE DE DONNÉES DES PERFORMANCES GAZELLE (SA 342 M1)
 // =========================================================================
 // MODE D'EMPLOI POUR AJOUTER/MODIFIER UNE COURBE :
 // 1. Utilisez "digitizer.html" pour obtenir le JSON de votre courbe.
 // 2. Collez-le dans les crochets "limitEnvelope: []" ou "curves: []" du bloc correspondant.
 // 
-// POUR AJOUTER UNE TOUTE NOUVELLE CATÃ‰GORIE (Ex: Masse max au dÃ©collage) :
+// POUR AJOUTER UNE TOUTE NOUVELLE CATÉGORIE (Ex: Masse max au décollage) :
 // Copiez-collez un bloc entier (ex: de "HES_ARME": { ... } ) et changez :
 // - type: "Identifiant court (ex: MMD)"
-// - typeLabel: "Nom qui apparaÃ®tra dans le 1er menu dÃ©roulant"
-// - configLabel: "Nom qui apparaÃ®tra dans le 2Ã¨me menu dÃ©roulant"
+// - typeLabel: "Nom qui apparaîtra dans le 1er menu déroulant"
+// - configLabel: "Nom qui apparaîtra dans le 2ème menu déroulant"
 // - xAxisLabel et yAxisLabel : Les titres des axes (si besoin de les changer)
 
 // =========================================================================
-// BASE DE DONNÃ‰ES DE LA FLOTTE
+// BASE DE DONNÉES DE LA FLOTTE
 // =========================================================================
 const fleetDatabase = {
     "F-MGAP": { number: "1234", config: "ARME", emptyWeight: 1250, emptyMomLong: 4500, emptyMomLat: 10 },
@@ -21,18 +21,18 @@ const fleetDatabase = {
 };
 
 // =========================================================================
-// SCÃ‰NARIOS DE VOL
+// SCÉNARIOS DE VOL
 // =========================================================================
-// Utilisez "SUFFIX" dans la liste des abaques pour qu'il soit remplacÃ© par
+// Utilisez "SUFFIX" dans la liste des abaques pour qu'il soit remplacé par
 // la configuration de la machine (_ARME ou _LISSE)
 const scenariosDatabase = {
     "VOLTAC": {
         label: "Vol Tactique",
-        charts: ["TAC_SUFFIX"] // Sera remplacÃ© par TAC_ARME ou TAC_LISSE
+        charts: ["TAC_SUFFIX"] // Sera remplacé par TAC_ARME ou TAC_LISSE
     },
     "MONTAGNE": {
         label: "Vol Montagne",
-        charts: ["HES_SUFFIX", "DES_SUFFIX"] // Sera remplacÃ© par HES_ARME, DES_ARME...
+        charts: ["HES_SUFFIX", "DES_SUFFIX"] // Sera remplacé par HES_ARME, DES_ARME...
     }
 };
 
@@ -43,7 +43,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - PLAFOND H.E.S.",
         type: "HES",
         typeLabel: "Plafond Vol Stationnaire H.E.S.",
-        configLabel: "ArmÃ© (4 HOT, Viviane)",
+        configLabel: "Armé (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 9",
         xAxisLabel: "MASSE (kg)",
@@ -101,7 +101,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - PLAFOND D.E.S.",
         type: "DES",
         typeLabel: "Plafond Vol Stationnaire D.E.S.",
-        configLabel: "ArmÃ© (4 HOT, Viviane)",
+        configLabel: "Armé (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 10",
         xAxisLabel: "MASSE (kg)",
@@ -127,7 +127,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - VOL TACTIQUE",
         type: "TAC",
         typeLabel: "Plafond Vol Tactique",
-        configLabel: "ArmÃ© (4 HOT, Viviane)",
+        configLabel: "Armé (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 11",
         xAxisLabel: "MASSE (kg)",
@@ -148,3 +148,15 @@ const chartsDatabase = {
         curves: [{"temp":50,"points":[{"x":2091,"y":-990},{"x":2068,"y":-501},{"x":2035,"y":159},{"x":1905,"y":673},{"x":1802,"y":1109},{"x":1721,"y":1479},{"x":1660,"y":1756},{"x":1606,"y":1993},{"x":1550,"y":2284},{"x":1497,"y":2548},{"x":1453,"y":2785},{"x":1404,"y":3049}]},{"temp":40,"points":[{"x":2103,"y":-990},{"x":2080,"y":-488},{"x":2045,"y":198},{"x":2027,"y":515},{"x":1957,"y":832},{"x":1876,"y":1188},{"x":1806,"y":1492},{"x":1740,"y":1795},{"x":1680,"y":2099},{"x":1627,"y":2337},{"x":1569,"y":2627},{"x":1511,"y":2917},{"x":1468,"y":3155},{"x":1404,"y":3498}]},{"temp":30,"points":[{"x":2117,"y":-990},{"x":2093,"y":-488},{"x":2070,"y":-26},{"x":2047,"y":436},{"x":2027,"y":819},{"x":1938,"y":1175},{"x":1870,"y":1479},{"x":1814,"y":1729},{"x":1748,"y":2007},{"x":1672,"y":2376},{"x":1606,"y":2706},{"x":1559,"y":2931},{"x":1497,"y":3261},{"x":1449,"y":3498},{"x":1408,"y":3747}]},{"temp":20,"points":[{"x":2130,"y":-992},{"x":2107,"y":-490},{"x":2064,"y":355},{"x":2029,"y":1067},{"x":1944,"y":1437},{"x":1870,"y":1793},{"x":1775,"y":2176},{"x":1713,"y":2467},{"x":1649,"y":2757},{"x":1602,"y":2981},{"x":1561,"y":3206},{"x":1523,"y":3391},{"x":1486,"y":3589},{"x":1453,"y":3773},{"x":1406,"y":4011}]},{"temp":10,"points":[{"x":2144,"y":-992},{"x":2121,"y":-490},{"x":2109,"y":-173},{"x":2095,"y":77},{"x":2074,"y":500},{"x":2057,"y":856},{"x":2027,"y":1384},{"x":1979,"y":1582},{"x":1919,"y":1833},{"x":1860,"y":2071},{"x":1806,"y":2295},{"x":1744,"y":2559},{"x":1688,"y":2849},{"x":1641,"y":3061},{"x":1579,"y":3377},{"x":1519,"y":3655},{"x":1466,"y":3932},{"x":1414,"y":4222}]},{"temp":0,"points":[{"x":2159,"y":-1009},{"x":2147,"y":-718},{"x":2135,"y":-415},{"x":2120,"y":-138},{"x":2102,"y":258},{"x":2085,"y":562},{"x":2054,"y":1130},{"x":2027,"y":1658},{"x":1947,"y":1988},{"x":1883,"y":2265},{"x":1809,"y":2555},{"x":1747,"y":2859},{"x":1687,"y":3123},{"x":1617,"y":3439},{"x":1566,"y":3730},{"x":1516,"y":3954},{"x":1452,"y":4271},{"x":1407,"y":4548}]},{"temp":-10,"points":[{"x":2172,"y":-996},{"x":2161,"y":-718},{"x":2151,"y":-481},{"x":2135,"y":-177},{"x":2118,"y":232},{"x":2098,"y":588},{"x":2077,"y":998},{"x":2058,"y":1341},{"x":2038,"y":1737},{"x":2019,"y":1988},{"x":1970,"y":2212},{"x":1914,"y":2423},{"x":1858,"y":2674},{"x":1788,"y":2964},{"x":1739,"y":3175},{"x":1679,"y":3439},{"x":1623,"y":3743},{"x":1555,"y":4060},{"x":1502,"y":4324},{"x":1460,"y":4561},{"x":1405,"y":4839}]},{"temp":-20,"points":[{"x":2192,"y":-1009},{"x":2178,"y":-705},{"x":2161,"y":-375},{"x":2147,"y":-45},{"x":2131,"y":338},{"x":2112,"y":694},{"x":2085,"y":1209},{"x":2065,"y":1552},{"x":2046,"y":1908},{"x":2027,"y":2252},{"x":1964,"y":2502},{"x":1906,"y":2753},{"x":1846,"y":3004},{"x":1792,"y":3241},{"x":1741,"y":3453},{"x":1683,"y":3730},{"x":1632,"y":3994},{"x":1572,"y":4258},{"x":1524,"y":4535},{"x":1481,"y":4746},{"x":1441,"y":4966},{"x":1408,"y":5111}]},{"temp":-30,"points":[{"x":2204,"y":-974},{"x":2192,"y":-683},{"x":2177,"y":-380},{"x":2163,"y":-10},{"x":2144,"y":399},{"x":2128,"y":782},{"x":2101,"y":1297},{"x":2078,"y":1772},{"x":2047,"y":2234},{"x":2027,"y":2617},{"x":1942,"y":2907},{"x":1876,"y":3184},{"x":1810,"y":3475},{"x":1742,"y":3805},{"x":1678,"y":4069},{"x":1610,"y":4412},{"x":1528,"y":4795},{"x":1466,"y":5125},{"x":1406,"y":5428}]},{"temp":-40,"points":[{"x":2200,"y":-525},{"x":2190,"y":-248},{"x":2171,"y":96},{"x":2161,"y":478},{"x":2138,"y":822},{"x":2122,"y":1204},{"x":2101,"y":1640},{"x":2074,"y":2076},{"x":2045,"y":2604},{"x":2025,"y":2894},{"x":1957,"y":3184},{"x":1878,"y":3514},{"x":1827,"y":3739},{"x":1753,"y":4069},{"x":1701,"y":4306},{"x":1641,"y":4583},{"x":1584,"y":4847},{"x":1534,"y":5111},{"x":1483,"y":5334},{"x":1437,"y":5585},{"x":1404,"y":5757}]}]
     }
 };
+
+// =========================================================================
+// PROCEDURES D'URGENCE (PANNES)
+// =========================================================================
+const pannesDatabase = {
+    'P_MOTEUR_VOL': { title: 'Panne Moteur en Vol', category: 'Moteur', pdf: 'docs/panne_moteur.pdf' },
+    'P_MOTEUR_STATIO': { title: 'Panne Moteur en Stationnaire', category: 'Moteur', pdf: 'docs/panne_moteur_statio.pdf' },
+    'INCENDIE_SOL': { title: 'Incendie au sol', category: 'Incendie', pdf: 'docs/incendie.pdf' },
+    'HYDRAULIQUE': { title: 'Panne Hydraulique', category: 'Syst�mes', pdf: 'docs/hydraulique.pdf' },
+    'BTP': { title: 'Alarme Limaille BTP', category: 'Transmission', pdf: 'docs/btp.pdf' }
+};
+

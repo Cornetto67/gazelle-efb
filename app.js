@@ -480,3 +480,72 @@ document.addEventListener('DOMContentLoaded', () => {
     showView('view-home');
 });
 
+
+// =========================================================================
+// MODULE PANNES
+// =========================================================================
+function initPannes() {
+    const searchInput = document.getElementById('search-pannes');
+    if (!searchInput) return;
+    
+    searchInput.addEventListener('input', renderPannesList);
+    renderPannesList();
+}
+
+function renderPannesList() {
+    const searchStr = document.getElementById('search-pannes').value.toLowerCase();
+    const listContainer = document.getElementById('list-pannes');
+    listContainer.innerHTML = '';
+
+    // Grouper par catégorie
+    const categories = {};
+    for (const [id, panne] of Object.entries(pannesDatabase)) {
+        if (panne.title.toLowerCase().includes(searchStr) || panne.category.toLowerCase().includes(searchStr)) {
+            if (!categories[panne.category]) categories[panne.category] = [];
+            categories[panne.category].push({ id, ...panne });
+        }
+    }
+
+    for (const [cat, pannes] of Object.entries(categories)) {
+        const catDiv = document.createElement('div');
+        catDiv.className = 'mt-2 mb-1 text-xs font-bold text-slate-400 uppercase tracking-wider';
+        catDiv.textContent = cat;
+        listContainer.appendChild(catDiv);
+
+        pannes.forEach(p => {
+            const btn = document.createElement('button');
+            btn.className = 'w-full text-left bg-white border border-slate-200 hover:border-red-400 hover:shadow-sm p-3 rounded-lg transition group';
+            btn.innerHTML = "<div class='font-bold text-slate-700 group-hover:text-red-600 transition'>" + p.title + "</div>";
+            btn.onclick = () => loadPdf(p.pdf, btn);
+            listContainer.appendChild(btn);
+        });
+    }
+}
+
+function loadPdf(pdfUrl, btnElement) {
+    // Mise en surbrillance
+    document.querySelectorAll('#list-pannes button').forEach(b => {
+        b.classList.remove('border-red-500', 'ring-2', 'ring-red-100');
+        b.classList.add('border-slate-200');
+    });
+    if (btnElement) {
+        btnElement.classList.remove('border-slate-200');
+        btnElement.classList.add('border-red-500', 'ring-2', 'ring-red-100');
+    }
+
+    const iframe = document.getElementById('pdf-frame');
+    const placeholder = document.getElementById('pdf-placeholder');
+    
+    placeholder.classList.add('hidden');
+    iframe.classList.remove('hidden');
+    
+    // Astuce : On peut utiliser le viewer PDF intégré du navigateur ou PDF.js plus tard.
+    // Pour l'instant, on charge directement l'URL dans l'iframe.
+    iframe.src = pdfUrl;
+}
+
+// Initialiser au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    if(typeof initPannes === 'function') initPannes();
+});
+

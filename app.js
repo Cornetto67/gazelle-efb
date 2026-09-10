@@ -351,7 +351,7 @@ function drawCharts() {
         }
         traces.push(limitTrace);
 
-        let plotMass = Math.min(finalMass, 2245);
+        let plotMass = Math.max(1400, Math.min(finalMass, 2245));
         let plotAlt = Math.max(-1000, Math.min(finalAlt, 6000));
 
         traces.push({

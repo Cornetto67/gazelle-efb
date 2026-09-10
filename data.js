@@ -1,19 +1,19 @@
-// =========================================================================
-// BASE DE DONNÉES DES PERFORMANCES GAZELLE (SA 342 M1)
+﻿// =========================================================================
+// BASE DE DONNÃ‰ES DES PERFORMANCES GAZELLE (SA 342 M1)
 // =========================================================================
 // MODE D'EMPLOI POUR AJOUTER/MODIFIER UNE COURBE :
 // 1. Utilisez "digitizer.html" pour obtenir le JSON de votre courbe.
 // 2. Collez-le dans les crochets "limitEnvelope: []" ou "curves: []" du bloc correspondant.
 // 
-// POUR AJOUTER UNE TOUTE NOUVELLE CATÉGORIE (Ex: Masse max au décollage) :
+// POUR AJOUTER UNE TOUTE NOUVELLE CATÃ‰GORIE (Ex: Masse max au dÃ©collage) :
 // Copiez-collez un bloc entier (ex: de "HES_ARME": { ... } ) et changez :
 // - type: "Identifiant court (ex: MMD)"
-// - typeLabel: "Nom qui apparaîtra dans le 1er menu déroulant"
-// - configLabel: "Nom qui apparaîtra dans le 2ème menu déroulant"
+// - typeLabel: "Nom qui apparaÃ®tra dans le 1er menu dÃ©roulant"
+// - configLabel: "Nom qui apparaÃ®tra dans le 2Ã¨me menu dÃ©roulant"
 // - xAxisLabel et yAxisLabel : Les titres des axes (si besoin de les changer)
 
 // =========================================================================
-// BASE DE DONNÉES DE LA FLOTTE
+// BASE DE DONNÃ‰ES DE LA FLOTTE
 // =========================================================================
 const fleetDatabase = {
     "F-MGAP": { number: "1234", config: "ARME", emptyWeight: 1250, emptyMomLong: 4500, emptyMomLat: 10 },
@@ -21,18 +21,18 @@ const fleetDatabase = {
 };
 
 // =========================================================================
-// SCÉNARIOS DE VOL
+// SCÃ‰NARIOS DE VOL
 // =========================================================================
-// Utilisez "SUFFIX" dans la liste des abaques pour qu'il soit remplacé par
+// Utilisez "SUFFIX" dans la liste des abaques pour qu'il soit remplacÃ© par
 // la configuration de la machine (_ARME ou _LISSE)
 const scenariosDatabase = {
     "VOLTAC": {
         label: "Vol Tactique",
-        charts: ["TAC_SUFFIX"] // Sera remplacé par TAC_ARME ou TAC_LISSE
+        charts: ["TAC_SUFFIX"] // Sera remplacÃ© par TAC_ARME ou TAC_LISSE
     },
     "MONTAGNE": {
         label: "Vol Montagne",
-        charts: ["HES_SUFFIX", "DES_SUFFIX"] // Sera remplacé par HES_ARME, DES_ARME...
+        charts: ["HES_SUFFIX", "DES_SUFFIX"] // Sera remplacÃ© par HES_ARME, DES_ARME...
     }
 };
 
@@ -43,7 +43,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - PLAFOND H.E.S.",
         type: "HES",
         typeLabel: "Plafond Vol Stationnaire H.E.S.",
-        configLabel: "Armé (4 HOT, Viviane)",
+        configLabel: "ArmÃ© (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 9",
         xAxisLabel: "MASSE (kg)",
@@ -87,11 +87,21 @@ const chartsDatabase = {
     },
 
     // ================== PLAFONDS D.E.S. ==================
+    "DES_LISSE": {
+        title: "Abaque 8.6 - PLAFOND D.E.S.",
+        type: "DES",
+        typeLabel: "Vol Stationnaire D.E.S.",
+        configLabel: "Lisse",
+        planche: "10A",
+        conditions: ["Appareil Lisse", "Sans tube polyvalent", "Avec DDJ"],
+        limitEnvelope: [{"x":2102,"y":1928},{"x":2100,"y":4159},{"x":1981,"y":4602},{"x":1850,"y":5100},{"x":1654,"y":5987},{"x":1402,"y":6013},{"x":1406,"y":5691},{"x":1517,"y":5019},{"x":1711,"y":3917},{"x":1875,"y":3017},{"x":2006,"y":2385},{"x":2102,"y":1928}],
+        curves: [{"temp":50,"points":[{"x":2202,"y":1068},{"x":2134,"y":1337},{"x":2034,"y":1686},{"x":1921,"y":2130},{"x":1802,"y":2627},{"x":1702,"y":3070},{"x":1588,"y":3608},{"x":1471,"y":4159},{"x":1404,"y":4522}]},{"temp":40,"points":[{"x":2202,"y":1485},{"x":2123,"y":1767},{"x":1992,"y":2291},{"x":1886,"y":2721},{"x":1777,"y":3191},{"x":1679,"y":3635},{"x":1598,"y":3998},{"x":1517,"y":4414},{"x":1404,"y":5006}]},{"temp":30,"points":[{"x":2202,"y":1753},{"x":2104,"y":2089},{"x":2009,"y":2466},{"x":1892,"y":2936},{"x":1773,"y":3447},{"x":1665,"y":3930},{"x":1544,"y":4535},{"x":1459,"y":4952},{"x":1404,"y":5247}]},{"temp":20,"points":[{"x":2200,"y":2009},{"x":2100,"y":2385},{"x":2025,"y":2681},{"x":1934,"y":3030},{"x":1854,"y":3366},{"x":1775,"y":3702},{"x":1692,"y":4078},{"x":1590,"y":4549},{"x":1496,"y":4992},{"x":1402,"y":5476}]},{"temp":10,"points":[{"x":2200,"y":2278},{"x":2100,"y":2654},{"x":1967,"y":3178},{"x":1844,"y":3675},{"x":1752,"y":4078},{"x":1636,"y":4616},{"x":1523,"y":5153},{"x":1436,"y":5583},{"x":1404,"y":5745}]},{"temp":0,"points":[{"x":2204,"y":2560},{"x":2100,"y":2936},{"x":2009,"y":3272},{"x":1917,"y":3648},{"x":1836,"y":3998},{"x":1742,"y":4401},{"x":1659,"y":4777},{"x":1567,"y":5207},{"x":1479,"y":5637},{"x":1406,"y":6013}]},{"temp":-10,"points":[{"x":2202,"y":2855},{"x":2100,"y":3232},{"x":2025,"y":3500},{"x":1940,"y":3836},{"x":1867,"y":4132},{"x":1802,"y":4401},{"x":1750,"y":4656},{"x":1694,"y":4898},{"x":1623,"y":5221},{"x":1556,"y":5530},{"x":1509,"y":5798},{"x":1467,"y":5973}]},{"temp":-20,"points":[{"x":2202,"y":3164},{"x":2096,"y":3541},{"x":2017,"y":3850},{"x":1950,"y":4092},{"x":1894,"y":4334},{"x":1817,"y":4656},{"x":1759,"y":4898},{"x":1702,"y":5153},{"x":1650,"y":5368},{"x":1598,"y":5624},{"x":1527,"y":5960}]},{"temp":-30,"points":[{"x":2200,"y":3487},{"x":2102,"y":3836},{"x":2017,"y":4159},{"x":1929,"y":4468},{"x":1850,"y":4817},{"x":1761,"y":5207},{"x":1667,"y":5624},{"x":1581,"y":5973}]},{"temp":-40,"points":[{"x":2200,"y":3796},{"x":2100,"y":4159},{"x":2017,"y":4468},{"x":1938,"y":4764},{"x":1854,"y":5113},{"x":1775,"y":5449},{"x":1702,"y":5785},{"x":1652,"y":5987}]}]
+    },
     "DES_ARME": {
         title: "Abaque 8.6 - PLAFOND D.E.S.",
         type: "DES",
         typeLabel: "Plafond Vol Stationnaire D.E.S.",
-        configLabel: "Armé (4 HOT, Viviane)",
+        configLabel: "ArmÃ© (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 10",
         xAxisLabel: "MASSE (kg)",
@@ -128,7 +138,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - VOL TACTIQUE",
         type: "TAC",
         typeLabel: "Plafond Vol Tactique",
-        configLabel: "Armé (4 HOT, Viviane)",
+        configLabel: "ArmÃ© (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 11",
         xAxisLabel: "MASSE (kg)",

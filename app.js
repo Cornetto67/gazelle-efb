@@ -136,7 +136,12 @@ function getCalculatedValue(chartId, mode) {
 }
 
 function isPointInEnvelope(x, y, envelope) {
+    // Si la masse dépasse la limite physique de l'abaque (généralement 2100-2200kg sur Gazelle), on force Hors Domaine
+    if (x > 2200) return false;
+    
+    // S'il n'y a pas d'enveloppe définie (ex: HES LISSE pas encore numérisé), on accepte si x <= 2200
     if (!envelope || envelope.length < 3) return true;
+    
     let inside = false;
     for (let i = 0, j = envelope.length - 1; i < envelope.length; j = i++) {
         let xi = envelope[i].x, yi = envelope[i].y;
@@ -337,8 +342,9 @@ function drawCharts() {
             name: 'Point', hovertemplate: `Masse: ${Math.round(finalMass)} kg<br>Altitude: ${Math.round(finalAlt)} m<extra></extra>`
         });
 
+        const maxXRng = Math.max(2250, finalMass + 50);
         const layout = {
-            xaxis: { title: 'MASSE (kg)', range: [1400, 2250], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
+            xaxis: { title: 'MASSE (kg)', range: [1400, maxXRng], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
             yaxis: { title: 'ALTITUDE (m)', range: [-1000, 6000], dtick: 1000, gridcolor: '#e2e8f0', zeroline: true },
             margin: { l: 50, r: 30, t: 20, b: 40 }, plot_bgcolor: '#ffffff', paper_bgcolor: 'transparent',
             hovermode: 'closest', dragmode: false

@@ -515,7 +515,7 @@ function render7Alpha() {
 
         btn.className = 'h-12 rounded-sm font-bold text-[14px] uppercase leading-none border-2 transition-all duration-200 flex items-center justify-center text-center p-1 btn-7-alpha ' + colorClasses;
         btn.innerHTML = voyant.label;
-        btn.onclick = () => loadPdf(voyant.pdf, btn, true);
+        btn.onclick = () => loadProcedure(voyant.htmlContent, btn, true);
         
         container.appendChild(btn);
     });
@@ -532,15 +532,14 @@ function renderAutresPannes() {
             const btn = document.createElement('button');
             btn.className = 'w-full text-left bg-white border border-slate-200 hover:border-red-400 hover:shadow-sm p-3 rounded-lg transition group list-panne-btn';
             btn.innerHTML = "<div class='font-bold text-slate-700 group-hover:text-red-600 transition'>" + p.title + "</div>";
-            btn.onclick = () => loadPdf(p.pdf, btn, false);
+            btn.onclick = () => loadProcedure(p.htmlContent, btn, false);
             listContainer.appendChild(btn);
         }
     });
 }
 
-function loadPdf(pdfUrl, btnElement, is7Alpha) {
+function loadProcedure(htmlContent, btnElement, is7Alpha) {
     try {
-        console.log('Loading PDF:', pdfUrl);
         document.querySelectorAll('.btn-7-alpha').forEach(b => {
             b.classList.remove('bg-amber-500', 'text-black', 'border-amber-400', 'shadow-[0_0_15px_rgba(245,158,11,0.8)]', 'z-10');
             b.classList.add('bg-[#2a2015]', 'border-[#4a3520]', 'text-amber-500');
@@ -560,17 +559,16 @@ function loadPdf(pdfUrl, btnElement, is7Alpha) {
             }
         }
 
-        const iframe = document.getElementById('pdf-frame');
+        const displayContainer = document.getElementById('pdf-frame');
         const placeholder = document.getElementById('pdf-placeholder');
         
         if (placeholder) placeholder.classList.add('hidden');
-        if (iframe) {
-            iframe.classList.remove('hidden');
-            iframe.src = encodeURI(pdfUrl);
+        if (displayContainer) {
+            displayContainer.classList.remove('hidden');
+            displayContainer.innerHTML = htmlContent;
         }
     } catch (err) {
-        console.error('Error in loadPdf:', err);
-        alert('Erreur: ' + err.message);
+        console.error('Error in loadProcedure:', err);
     }
 }
 
@@ -578,6 +576,7 @@ function loadPdf(pdfUrl, btnElement, is7Alpha) {
 document.addEventListener('DOMContentLoaded', () => {
     if(typeof initPannes === 'function') initPannes();
 });
+
 
 
 

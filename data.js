@@ -154,37 +154,225 @@ const chartsDatabase = {
 // =========================================================================
 const panneau7Alpha = [
     // Ligne 0
-    { id: 'EMPTY1', label: '', color: 'none', pdf: null },
-    { id: 'PITOT', label: 'PITOT', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
-    { id: 'EMPTY2', label: '', color: 'none', pdf: null },
+    { id: 'EMPTY1', label: '', color: 'none' },
+    { id: 'PITOT', label: 'PITOT', color: 'amber', title: 'Réchauffage PITOT',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>PANNE CHAUFFAGE PITOT</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne de chauffage de l'antenne PITOT.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Vérifier la position de l'interrupteur.</li>
+                        <li>Décider la poursuite du vol ou son interruption en fonction des conditions.</li>
+                    </ul> },
+    { id: 'EMPTY2', label: '', color: 'none' },
     // Ligne 1
-    { id: 'H_MOT', label: 'H.MOT', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
-    { id: 'H_BTP', label: 'H.BTP', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
-    { id: 'H_RAL', label: 'H.RAL', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
+    { id: 'H_MOT', label: 'H.MOT', color: 'amber', title: 'Pression Huile Moteur',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>H.MOT - PRESSION HUILE GTM</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Baisse de pression d'huile du G.T.M. (en vol).</p>
+                    <p class='mb-2 font-bold text-red-600'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li class='font-bold text-red-600'>Se poser dès que possible.</li>
+                        <li>En vol, maintenir la puissance la plus faible possible.</li>
+                    </ul> },
+    { id: 'H_BTP', label: 'H.BTP', color: 'amber', title: 'Pression Huile BTP',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>H.BTP - PRESSION HUILE BTP</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Baisse de pression d'huile dans la B.T.P.</p>
+                    <p class='mb-2 font-bold text-red-600'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li class='font-bold text-red-600'>Se poser dès que possible.</li>
+                    </ul> },
+    { id: 'H_RAL', label: 'H.RAL', color: 'amber', title: 'Pression Huile Moteur au Ralenti',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>H.RAL - PRESSION HUILE RALENTI</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Pression d'huile G.T.M. inférieure à la pression normale de ralenti.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>En fonctionnement ralenti : <b>couper le G.T.M.</b></li>
+                        <li>En vol : se reporter à l'allumage du pavé "H.MOT" (si allumé).</li>
+                    </ul> },
     // Ligne 2
-    { id: 'GENE', label: 'GENE', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
-    { id: 'ALTER', label: 'ALTER', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
-    { id: 'BAT', label: 'BAT.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
+    { id: 'GENE', label: 'GENE', color: 'amber', title: 'Panne Génératrice',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>GENE - PANNE GÉNÉRATRICE</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation du réseau en courant continu.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Vérifier la position de l'interrupteur. Vérifier le voltmètre.</li>
+                        <li>Tenter un réarmement.</li>
+                        <li>Si infructueux : réduire la consommation, continuer le vol en surveillant la tension, et isoler la génératrice.</li>
+                    </ul> },
+    { id: 'ALTER', label: 'ALTER', color: 'amber', title: 'Panne Alternateur',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>ALTER - PANNE ALTERNATEUR</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation de l'ensemble du réseau en courant alternatif.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Vérifier la position de l'interrupteur.</li>
+                        <li>Tenter un réarmement.</li>
+                        <li>Continuer le vol ou se poser en fonction des circonstances. Isoler l'alternateur.</li>
+                    </ul> },
+    { id: 'BAT', label: 'BAT.', color: 'amber', title: 'Batterie Isolée',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>BAT - BATTERIE DISJONCTÉE</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>La batterie est isolée du réseau continu, sa charge n'est plus assurée.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Vérifier la position de l'interrupteur.</li>
+                        <li>Surveiller la tension. Poursuivre le vol en fonction des circonstances.</li>
+                    </ul> },
     // Ligne 3
-    { id: 'PA', label: 'PA', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
-    { id: 'NAV', label: 'NAV.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
-    { id: 'COMB', label: 'COMB.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
+    { id: 'PA', label: 'PA', color: 'amber', title: 'Panne PA',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>PA - PILOTE AUTOMATIQUE</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation du PA ou des détecteurs.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Continuer le vol.</li>
+                        <li>En VMC : poursuivre en VMC.</li>
+                        <li>En IMC : tenter de retrouver VMC et les conserver.</li>
+                    </ul> },
+    { id: 'NAV', label: 'NAV.', color: 'amber', title: 'Panne Réseau Alternatif',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>NAV - TENSION 26V/400Hz</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation du réseau alternatif 26 V/400 Hz.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Continuer le vol ou se poser en fonction des circonstances.</li>
+                    </ul> },
+    { id: 'COMB', label: 'COMB.', color: 'amber', title: 'Niveau Carburant',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>COMB - NIVEAU CARBURANT</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Quantité de carburant utilisable inférieure à 50 litres en vol stabilisé.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li class='font-bold text-amber-600'>Se poser ou continuer le vol, en fonction des circonstances, il reste environ 15 mn de vol.</li>
+                    </ul> },
     // Ligne 4
-    { id: 'BP_HY', label: 'BP.HY', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=3' },
-    { id: 'LIM', label: 'LIM', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=4' },
-    { id: 'FILT', label: 'FILT.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=4' }
+    { id: 'BP_HY', label: 'BP.HY', color: 'amber', title: 'Baisse Pression Hydraulique',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>BP.HY - PRESSION HYDRAULIQUE</h2>
+                    <div class='bg-red-100 border-l-4 border-red-600 p-4 mb-4 text-red-900'>
+                        <p class='font-bold mb-1'>ATTENTION :</p>
+                        <ol class='list-decimal pl-4'>
+                            <li>A LA MISE EN STATIONNAIRE UN EFFORT IMPORTANT DOIT ETRE APPLIQUE AU PALONNIER.</li>
+                            <li>UN EFFORT PLUS IMPORTANT EST NECESSAIRE POUR MANOEUVRER LES COMMANDES.</li>
+                            <li>A L'ATTERRISSAGE BLOQUER LA FRICTION DU PAS GENERAL AVANT DE REDUIRE LE G.T.M.</li>
+                        </ol>
+                    </div>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Rejoindre la vitesse de refuge (150 km/h).</li>
+                        <li>Vérifier interrupteur "SERVO" sur "M".</li>
+                        <li>Si panne confirmée : Couper interrupteurs "PA", "SERVO" et "TRIM".</li>
+                        <li>La vitesse maximale est de 180 km/h. L'inclinaison maxi est de 30°.</li>
+                        <li>Lors de l'atterrissage, terminer par une approche très plate, face au vent.</li>
+                    </ul> },
+    { id: 'LIM', label: 'LIM', color: 'amber', title: 'Limaille Moteur',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>LIM - LIMAILLE GTM</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Détection de particules métalliques sur le bouchon magnétique du G.T.M.</p>
+                    <p class='mb-2 font-bold text-red-600'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li class='font-bold text-red-600'>Atterrir dès que possible.</li>
+                        <li>Après atterrissage, retirer le bouchon, vérifier la présence de particules. (Appliquer la procédure de levée de doute du MAT).</li>
+                    </ul> },
+    { id: 'FILT', label: 'FILT.', color: 'amber', title: 'Filtre Colmaté',
+      htmlContent: <h2 class='text-2xl font-bold text-amber-600 mb-4'>FILT - FILTRE COLMATÉ</h2>
+                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Filtre carburant colmaté.</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Poursuivre le vol en surveillant les paramètres.</li>
+                    </ul> }
 ];
 
 const autresPannes = [
-    { id: 'AUTOROTATION', title: 'Autorotation (Perte complète de puissance)', pdf: 'SA 342M1/37_4-1.pdf#page=1' },
-    { id: 'PANNE_GTM_VOL', title: 'Arrêt du GTM en vol (Panne totale)', pdf: 'SA 342M1/37_4-1.pdf#page=2' },
-    { id: 'FONCT_ANORMAL_REGUL', title: 'Fonctionnement anormal du régulateur', pdf: 'SA 342M1/37_4-1.pdf#page=3' },
-    { id: 'FEU_GTM', title: 'Feu au GTM (Démarrage / En vol)', pdf: 'SA 342M1/37_4-1.pdf#page=4' },
-    { id: 'FUMEE_CABINE', title: 'Fumée dans la cabine', pdf: 'SA 342M1/37_4-1.pdf#page=4' },
-    { id: 'ROTOR_ANTI_COUPLE', title: 'Panne du rotor anti-couple', pdf: 'SA 342M1/37_4-1.pdf#page=5' },
-    { id: 'INCIDENT_CMDE_VOL', title: 'Incidents commandes de vol / Servo-commandes', pdf: 'SA 342M1/38_4-2.pdf#page=7' },
-    { id: 'ANOMALIE_CAP', title: 'Anomalies de cap / Gyro', pdf: 'SA 342M1/38_4-2.pdf#page=8' },
-    { id: 'PANNE_COUPLEMETRE', title: 'Panne de couplemètre', pdf: 'SA 342M1/38_4-2.pdf#page=10' }
+    { id: 'AUTOROTATION', title: 'Autorotation (Perte complète de puissance)', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>AUTOROTATION</h2>
+                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Procédure (G.T.M coupé ou panne) :</h3>
+                    <ol class='list-decimal pl-5 space-y-2'>
+                        <li><b>Réduire le pas général</b> immédiatement.</li>
+                        <li>Contrôler la vitesse (Vi = 100 à 110 km/h conseillée).</li>
+                        <li>Rechercher un terrain favorable pour l'atterrissage.</li>
+                        <li>Effectuer l'arrondi (flare) pour casser la vitesse, et se poser à plat.</li>
+                    </ol> },
+    { id: 'PANNE_GTM_VOL', title: 'Arrêt du GTM en vol (Panne totale)', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>ARRÊT DU G.T.M EN VOL</h2>
+                    <p class='mb-4 text-slate-600'><b>Symptômes :</b> Fuselage tourne (légèrement) à droite. "ALARM" puis "H.MOT" et "H.RAL" s'allument. La vitesse rotor diminue.</p>
+                    <h3 class='text-xl font-bold text-red-600 mb-2'>Action immédiate :</h3>
+                    <ul class='list-disc pl-5 space-y-2 mb-4'>
+                        <li class='font-bold text-red-600'>Appliquer la procédure d'autorotation.</li>
+                    </ul>
+                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Si l'altitude le permet (> 700m sol) :</h3>
+                    <ul class='list-disc pl-5 space-y-2 mb-4'>
+                        <li>Tenter une remise en route (Vi ~120 km/h, sélecteur sur M).</li>
+                    </ul>
+                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Si l'altitude est trop faible :</h3>
+                    <ul class='list-disc pl-5 space-y-2'>
+                        <li>Robinet coupe-feu <b>FERMÉ</b>.</li>
+                        <li>Couper la pompe de gavage, Sélecteur sur A, Réduire la manette de débit.</li>
+                    </ul> },
+    { id: 'FONCT_ANORMAL_REGUL', title: 'Fonctionnement anormal du régulateur', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>RÉGULATEUR ANORMAL</h2>
+                    <p class='mb-4'>Se manifeste par des <b>battements</b> (variations de la vitesse de rotation).</p>
+                    <ol class='list-decimal pl-5 space-y-2'>
+                        <li><b>Variations peu importantes :</b> perdre de l'altitude. Si le phénomène subsiste, mettre le régulateur hors circuit (diminuer de 500 tr/mn).</li>
+                        <li><b>Variations importantes et rapides :</b> mettre le régulateur hors circuit immédiatement.</li>
+                    </ol>
+                    <p class='mt-4'><b>Vol avec régulateur hors circuit :</b> Croisière à 42.500 tr/mn environ et pas de l'ordre de 7,2°. Effectuer une approche glissée ou une autorotation selon l'équipage.</p> },
+    { id: 'FEU_GTM', title: 'Feu au GTM (Démarrage / En vol)', 
+      htmlContent: <h2 class='text-2xl font-bold text-red-600 mb-4 border-b pb-2'>FEU AU G.T.M</h2>
+                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Feu au démarrage :</h3>
+                    <ol class='list-decimal pl-5 space-y-1 mb-4'>
+                        <li>Fermer le robinet "coupe-feu" et appliquer le frein rotor.</li>
+                        <li>Sélecteur de démarrage sur "A".</li>
+                        <li>Réduire la manette de débit. Couper la pompe de gavage.</li>
+                        <li>Procéder à une ventilation. Combattre le feu.</li>
+                    </ol>
+                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Feu en vol :</h3>
+                    <ol class='list-decimal pl-5 space-y-1'>
+                        <li>Fermer le robinet coupe-feu et <b>réduire le pas général</b>.</li>
+                        <li>Réduire la manette de débit. Couper la pompe de gavage.</li>
+                        <li>Ne pas tenter de rallumage. Se poser en autorotation.</li>
+                        <li>Mettre le sélecteur sur "A" dans les 20s.</li>
+                    </ol> },
+    { id: 'FUMEE_CABINE', title: 'Fumée dans la cabine', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>FUMÉE EN CABINE</h2>
+                    <p class='mb-2 text-red-600 font-bold'>Si l'origine n'est pas identifiée : ATTERRIR DES QUE POSSIBLE.</p>
+                    <ol class='list-decimal pl-5 space-y-2'>
+                        <li>Couper batterie, génératrice, alternateur.</li>
+                        <li>Ventiler la cabine en ouvrant les fenêtres coulissantes.</li>
+                        <li>Couper tous les interrupteurs électriques et le chauffage.</li>
+                        <li>Remettre un par un les interrupteurs jusqu'à identification de la source.</li>
+                        <li>Laisser l'équipement en cause sur arrêt.</li>
+                    </ol> },
+    { id: 'ROTOR_ANTI_COUPLE', title: 'Panne du rotor anti-couple', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>PANNE ROTOR ANTI-COUPLE (RAC)</h2>
+                    <p class='mb-4'>Mouvement de lacet vers la <b>gauche</b>.</p>
+                    <h3 class='text-lg font-bold text-slate-700 mb-2'>Stationnaire / Basse vitesse / Faible altitude :</h3>
+                    <ul class='list-disc pl-5 space-y-1 mb-4'>
+                        <li>Passer immédiatement en autorotation (baisser pas collectif).</li>
+                        <li>Contrer la rotation à droite (manche ou filet de puissance).</li>
+                        <li>En approche finale, couper G.T.M et poser sur place (flare).</li>
+                    </ul>
+                    <h3 class='text-lg font-bold text-slate-700 mb-2'>En montée / En croisière :</h3>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Réduire le pas pour annuler le dérapage.</li>
+                        <li>Augmenter la vitesse, contrôler le cap par le roulis.</li>
+                        <li>Rechercher un terrain pour autorotation avec flare accentué. GTM coupé en finale.</li>
+                    </ul> },
+    { id: 'INCIDENT_CMDE_VOL', title: 'Incidents commandes de vol / Servo-commandes', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>INCIDENT COMMANDES DE VOL</h2>
+                    <p class='mb-4'><b>Symptôme :</b> Durcissement des commandes de vol (sans allumage BP.HY).</p>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Panne servo-commande confirmée : couper interrupteur "SERVO" (sur M).</li>
+                        <li>Poursuivre le vol en pilotant aux efforts.</li>
+                        <li>La vitesse maximale est réduite, atterrissage type approche plate.</li>
+                    </ul> },
+    { id: 'ANOMALIE_CAP', title: 'Anomalies de cap / Gyro', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>ANOMALIE DE CAP</h2>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>Si le cap du directionnel est erroné, naviguer au compas de secours.</li>
+                        <li>Vérifier le fonctionnement de l'alternateur (alimentation gyro).</li>
+                    </ul> },
+    { id: 'PANNE_COUPLEMETRE', title: 'Panne de couplemètre', 
+      htmlContent: <h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>PANNE COUPLEMÈTRE</h2>
+                    <p class='mb-2 font-bold'>Action Pilote :</p>
+                    <ul class='list-disc pl-5 space-y-1'>
+                        <li>En croisière, ne pas dépasser la première butée élastique du pas général.</li>
+                    </ul> }
 ];
+
 
 

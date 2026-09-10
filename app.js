@@ -101,7 +101,7 @@ function getCalculatedValue(chartId, mode) {
     
     let val1, val2, temp1, temp2;
     let temp = globalState.temp;
-    let inputValue = mode === 'ALT' ? globalState.mass : globalState.pressureAlt;
+    let inputValue = mode === 'ALT' ? globalState.mass : globalState.targetAlt;
 
     if (temp <= sortedCurves[0].temp) {
         return mode === 'ALT' 
@@ -288,7 +288,7 @@ function drawCharts() {
             resEl.innerHTML = '<span class="text-amber-500">N/A</span>';
             Plotly.react(plotDiv, [], {
                 title: 'Abaque non numérisé',
-                xaxis: { range: [1400, 2250], visible: false },
+                xaxis: { range: [1400, Math.max(2250, finalMass + 50)], visible: false },
                 yaxis: { range: [-1000, 6000], visible: false },
                 plot_bgcolor: '#f8fafc', paper_bgcolor: 'transparent'
             }, { displayModeBar: false });
@@ -332,7 +332,7 @@ function drawCharts() {
         }
 
         // On borne la position du point rouge pour le dessin (le garde visible s'il dépasse l'écran)
-        let plotMass = Math.min(finalMass, 2245);
+        let plotMass = finalMass;
         let plotAlt = Math.max(-1000, Math.min(finalAlt, 6000));
 
         traces.push({
@@ -347,7 +347,7 @@ function drawCharts() {
         });
 
         const layout = {
-            xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, 2250], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
+            xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, Math.max(2250, finalMass + 50)], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
             yaxis: { title: chartDef.yAxisLabel || 'ALTITUDE PRESSION (m)', range: [-1000, 6000], dtick: 1000, gridcolor: '#e2e8f0', zeroline: true },
             margin: { l: 70, r: 40, t: 80, b: 60 }, plot_bgcolor: '#ffffff', paper_bgcolor: 'transparent',
             hovermode: 'closest', dragmode: false
@@ -459,3 +459,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Init state
     showView('view-home');
 });
+

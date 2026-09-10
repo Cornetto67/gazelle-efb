@@ -343,7 +343,8 @@ function drawCharts() {
         traces.push({
             x: [plotMass], y: [plotAlt], mode: 'markers',
             marker: { color: '#ef4444', size: 10, line: {color: 'white', width: 2} },
-            name: 'Point', hovertemplate: `Masse: ${Math.round(finalMass)} kg<br>Altitude: ${Math.round(finalAlt)} m<extra></extra>`
+            name: 'Lecture', hovertemplate: `Masse: ${Math.round(finalMass)} kg<br>Altitude: ${Math.round(finalAlt)} m<extra></extra>`,
+            showlegend: false
         });
 
         const layout = {

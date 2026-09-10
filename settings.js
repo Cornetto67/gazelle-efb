@@ -186,10 +186,134 @@ window.importDatabase = function() {
     reader.readAsText(file);
 }
 
-function renderSettingsScenarios() {
+window.renderSettingsScenarios = function() {
+    const container = document.getElementById('settings-content');
+    let html = `
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-black text-slate-800">Profils de Vol</h3>
+            <button onclick="editScenario('')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition">+ Nouveau Profil</button>
+        </div>
+        <div class="grid gap-4">
+    `;
+
+    for (const [id, sc] of Object.entries(scenariosDatabase)) {
+        html += `
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center hover:border-blue-300 transition">
+                <div>
+                    <h4 class="font-bold text-slate-800 text-lg">${sc.label}</h4>
+                    <div class="text-xs text-slate-500 mt-1 font-mono">Abaques inclus : ${sc.charts.join(', ')}</div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="editScenario('${id}')" class="bg-slate-100 hover:bg-blue-100 text-slate-600 hover:text-blue-600 px-3 py-1.5 rounded font-semibold transition">Modifier</button>
+                    <button onclick="deleteScenario('${id}')" class="bg-slate-100 hover:bg-red-100 text-slate-600 hover:text-red-600 px-3 py-1.5 rounded font-semibold transition">Supprimer</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+window.editScenario = function(existingId) {
+    const isNew = !existingId;
+    const data = existingId ? scenariosDatabase[existingId] : { label: "Nouveau Profil", charts: [] };
+    
+    // Extraire tous les types d'abaques génériques disponibles (ex: HES, DES, TAC)
+    const availablePrefixes = [...new Set(Object.keys(chartsDatabase).map(k => k.split('_')[0]))];
+    
+    // Générer les cases à cocher
+    let checkboxesHtml = availablePrefixes.map(prefix => {
+        // Trouver un titre d'exemple (ex: "Abaque 8.6 - PLAFOND H.E.S.")
+        const sampleChart = chartsDatabase[`${prefix}_LISSE`] || chartsDatabase[`${prefix}_ARME`];
+        const title = sampleChart ? sampleChart.title : prefix;
+        const chartId = `${prefix}_SUFFIX`; // SUFFIX sera remplacé dynamiquement par ARME ou LISSE
+        const checked = data.charts.includes(chartId) ? 'checked' : '';
+        
+        return `
+            <label class="flex items-center gap-3 p-3 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                <input type="checkbox" class="frm-scenario-chart w-5 h-5 text-blue-600" value="${chartId}" ${checked}>
+                <span class="font-bold text-slate-700">${title} <span class="font-normal text-slate-400 text-xs ml-1">(${chartId})</span></span>
+            </label>
+        `;
+    }).join('');
+
     const container = document.getElementById('settings-content');
     container.innerHTML = `
-        <h3 class="text-2xl font-black text-slate-800 mb-6">Profils de Vol (En développement)</h3>
-        <p class="text-slate-600">L'interface de modification visuelle des scénarios sera bientôt disponible.<br>Pour l'instant, les scénarios (VOLTAC, MONTAGNE) sont définis dans <code>data.js</code>.</p>
+        <h3 class="text-2xl font-black text-slate-800 mb-6">${isNew ? "Créer un profil" : "Modifier " + existingId}</h3>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-xl">
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Identifiant système (sans espace)</label>
+                <input type="text" id="frm-scen-id" value="${existingId || ''}" ${!isNew ? 'readonly class="w-full border-2 border-slate-100 bg-slate-50 rounded p-2 text-slate-500 font-bold"' : 'class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500" placeholder="ex: ENTRAINEMENT"'} >
+            </div>
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nom d'affichage</label>
+                <input type="text" id="frm-scen-label" value="${data.label}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500" placeholder="ex: Vol d'entraînement">
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-3">Abaques à afficher dans ce profil</label>
+                <div class="flex flex-col gap-2">
+                    ${checkboxesHtml}
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="saveScenario('${existingId}')" class="flex-1 bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">Enregistrer</button>
+                <button onclick="renderSettingsScenarios()" class="bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded hover:bg-slate-300 transition">Annuler</button>
+            </div>
+        </div>
     `;
+}
+
+window.saveScenario = function(oldId) {
+    const rawId = document.getElementById('frm-scen-id').value.trim();
+    // Nettoyer l'ID pour qu'il soit propre (MAJUSCULES, pas d'espaces ni d'accents)
+    const id = rawId.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+    
+    if (!id) return alert("L'identifiant est obligatoire");
+    
+    const label = document.getElementById('frm-scen-label').value.trim();
+    if (!label) return alert("Le nom d'affichage est obligatoire");
+    
+    const checkboxes = document.querySelectorAll('.frm-scenario-chart:checked');
+    const charts = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (charts.length === 0) return alert("Vous devez sélectionner au moins un abaque.");
+
+    scenariosDatabase[id] = {
+        label: label,
+        charts: charts
+    };
+    
+    saveUserDatabase();
+    
+    // Mettre à jour l'interface principale
+    if (typeof renderScenarioTabs === 'function') {
+        // Si on supprime le scénario actif
+        if (!scenariosDatabase[globalState.scenario]) {
+             globalState.scenario = Object.keys(scenariosDatabase)[0];
+        }
+        renderScenarioTabs();
+        if (typeof syncUI === 'function') syncUI();
+    }
+    
+    renderSettingsScenarios();
+}
+
+window.deleteScenario = function(id) {
+    if (confirm(`Supprimer définitivement le profil ${id} ?`)) {
+        delete scenariosDatabase[id];
+        saveUserDatabase();
+        
+        if (typeof renderScenarioTabs === 'function') {
+            if (globalState.scenario === id) {
+                 globalState.scenario = Object.keys(scenariosDatabase)[0];
+            }
+            renderScenarioTabs();
+            if (typeof syncUI === 'function') syncUI();
+        }
+        
+        renderSettingsScenarios();
+    }
 }

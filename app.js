@@ -219,56 +219,70 @@ function drawCharts() {
     if (typeof Plotly === 'undefined') return;
 
     const layoutContainer = document.getElementById('chartsLayout');
-    layoutContainer.innerHTML = '';
-
     const scenario = scenariosDatabase[globalState.scenario];
     if (!scenario) return;
 
     const aircraftConfig = fleetDatabase[globalState.aircraft]?.config || "LISSE";
+    const currentSignature = globalState.scenario + "_" + aircraftConfig + "_" + globalState.mode;
 
+    // Si la structure (scénario, config, mode) a changé, on reconstruit le DOM
+    if (layoutContainer.dataset.signature !== currentSignature) {
+        layoutContainer.innerHTML = '';
+        layoutContainer.dataset.signature = currentSignature;
+
+        scenario.charts.forEach(rawChartId => {
+            const chartId = rawChartId.replace('SUFFIX', aircraftConfig);
+            const chartDef = chartsDatabase[chartId];
+            if (!chartDef) return;
+
+            const divWrapper = document.createElement('div');
+            divWrapper.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4";
+            
+            const header = document.createElement('div');
+            header.className = "flex justify-between items-start";
+            let resultTitle = globalState.mode === 'ALT' ? "Plafond Calculé" : "Masse Maximale";
+            header.innerHTML = `
+                <div>
+                    <h3 class="font-bold text-slate-800">${chartDef.title}</h3>
+                    <div class="text-xs text-slate-500 italic mt-1">Planche ${chartDef.planche || '-'}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs font-bold text-slate-500 uppercase">${resultTitle}</div>
+                    <div class="text-2xl font-black text-slate-800" id="res-${chartId}">--</div>
+                    <div class="text-xs font-bold text-red-600 hidden" id="warn-${chartId}">HORS DOMAINE</div>
+                </div>
+            `;
+            divWrapper.appendChild(header);
+
+            if (chartDef.conditions) {
+                const conds = document.createElement('div');
+                conds.className = "text-xs bg-slate-50 p-2 rounded border border-slate-100";
+                conds.innerHTML = `<span class="font-bold text-slate-700">Conditions : </span><span class="text-slate-600">${chartDef.conditions.join(', ')}</span>`;
+                divWrapper.appendChild(conds);
+            }
+
+            const plotDiv = document.createElement('div');
+            plotDiv.id = `plot-${chartId}`;
+            plotDiv.style.height = "350px";
+            plotDiv.className = "w-full";
+            divWrapper.appendChild(plotDiv);
+            layoutContainer.appendChild(divWrapper);
+        });
+    }
+
+    // Mise à jour des valeurs et tracés Plotly
     scenario.charts.forEach(rawChartId => {
         const chartId = rawChartId.replace('SUFFIX', aircraftConfig);
         const chartDef = chartsDatabase[chartId];
         if (!chartDef) return;
 
-        // Créer un conteneur pour le graphique
-        const divWrapper = document.createElement('div');
-        divWrapper.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4";
-        
-        // Entête du graphique
-        const header = document.createElement('div');
-        header.className = "flex justify-between items-start";
-        // Header adaptation based on mode
-        let resultTitle = globalState.mode === 'ALT' ? "Plafond Calculé" : "Masse Maximale";
-        header.innerHTML = `
-            <div>
-                <h3 class="font-bold text-slate-800">${chartDef.title}</h3>
-                <div class="text-xs text-slate-500 italic mt-1">Planche ${chartDef.planche || '-'}</div>
-            </div>
-            <div class="text-right">
-                <div class="text-xs font-bold text-slate-500 uppercase">${resultTitle}</div>
-                <div class="text-2xl font-black text-slate-800" id="res-${chartId}">--</div>
-                <div class="text-xs font-bold text-red-600 hidden" id="warn-${chartId}">HORS DOMAINE</div>
-            </div>
-        `;
-        divWrapper.appendChild(header);
+        const plotDiv = document.getElementById(`plot-${chartId}`);
+        const resEl = document.getElementById(`res-${chartId}`);
+        const warnEl = document.getElementById(`warn-${chartId}`);
+        if (!plotDiv || !resEl || !warnEl) return;
 
-        // Conditions
-        if (chartDef.conditions) {
-            const conds = document.createElement('div');
-            conds.className = "text-xs bg-slate-50 p-2 rounded border border-slate-100";
-            conds.innerHTML = `<span class="font-bold text-slate-700">Conditions : </span><span class="text-slate-600">${chartDef.conditions.join(', ')}</span>`;
-            divWrapper.appendChild(conds);
-        }
+        const activeData = chartDef.curves || [];
 
-        // Plotly container
-        const plotDiv = document.createElement('div');
-        plotDiv.style.height = "350px";
-        plotDiv.className = "w-full";
-        divWrapper.appendChild(plotDiv);
-        layoutContainer.appendChild(divWrapper);
-
-        // Calculs
         let finalMass = 1400;
         let finalAlt = 0;
         let calcValue = getCalculatedValue(chartId, globalState.mode);
@@ -281,14 +295,11 @@ function drawCharts() {
             finalMass = calcValue || 1400;
         }
         
-        const resEl = document.getElementById(`res-${chartId}`);
-        const warnEl = document.getElementById(`warn-${chartId}`);
-
         if (calcValue === null) {
             resEl.innerHTML = '<span class="text-amber-500">N/A</span>';
             Plotly.react(plotDiv, [], {
                 title: 'Abaque non numérisé',
-                xaxis: { range: [1400, Math.max(2250, finalMass + 50)], visible: false },
+                xaxis: { range: [1400, 2250], visible: false },
                 yaxis: { range: [-1000, 6000], visible: false },
                 plot_bgcolor: '#f8fafc', paper_bgcolor: 'transparent'
             }, { displayModeBar: false });
@@ -306,8 +317,6 @@ function drawCharts() {
             warnEl.classList.add('hidden');
         }
 
-        // Traces
-        const activeData = chartDef.curves;
         const plotlyCurves = activeData.map(curve => {
             const sortedPts = [...curve.points].sort((a,b) => a.x - b.x);
             return { t: curve.temp, x: sortedPts.map(p=>p.x), y: sortedPts.map(p=>p.y) };
@@ -317,22 +326,32 @@ function drawCharts() {
             const textArr = curve.x.map((_, i) => i === curve.x.length - 1 ? `${curve.t}°` : '');
             return {
                 x: curve.x, y: curve.y, text: textArr, mode: 'lines+text', textposition: 'middle right',
-                textfont: { color: '#94a3b8', size: 10, family: 'sans-serif' },
-                line: { color: '#cbd5e1', width: 2 }, name: `${curve.t}°C`, hoverinfo: 'none', showlegend: false
+                textfont: { color: '#94a3b8', size: 11, family: 'sans-serif' },
+                line: { color: '#cbd5e1', width: 2 }, name: `${curve.t}°C`, hoverinfo: 'name', showlegend: false
             };
         });
 
+        let limitTrace = {
+            x: [1400, 2200], y: [4000, 4000], mode: 'lines',
+            line: { color: '#0f172a', width: 3 }, name: 'Limite', hoverinfo: 'none', showlegend: false
+        };
+
         if (chartDef.limitEnvelope && chartDef.limitEnvelope.length > 0) {
-            traces.push({
+            limitTrace = {
                 x: chartDef.limitEnvelope.map(p => p.x),
                 y: chartDef.limitEnvelope.map(p => p.y),
-                mode: 'lines', line: { color: '#0f172a', width: 3 },
-                name: 'Domaine', hoverinfo: 'none', showlegend: false
-            });
+                mode: 'lines',
+                line: { color: '#0f172a', width: 4 },
+                name: 'Domaine Approuvé',
+                hoverinfo: 'none',
+                showlegend: false
+            };
+            limitTrace.x.push(limitTrace.x[0]);
+            limitTrace.y.push(limitTrace.y[0]);
         }
+        traces.push(limitTrace);
 
-        // On borne la position du point rouge pour le dessin (le garde visible s'il dépasse l'écran)
-        let plotMass = finalMass;
+        let plotMass = Math.min(finalMass, 2245);
         let plotAlt = Math.max(-1000, Math.min(finalAlt, 6000));
 
         traces.push({
@@ -348,7 +367,7 @@ function drawCharts() {
         });
 
         const layout = {
-            xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, Math.max(2250, finalMass + 50)], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
+            xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, 2250], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
             yaxis: { title: chartDef.yAxisLabel || 'ALTITUDE PRESSION (m)', range: [-1000, 6000], dtick: 1000, gridcolor: '#e2e8f0', zeroline: true },
             margin: { l: 70, r: 40, t: 80, b: 60 }, plot_bgcolor: '#ffffff', paper_bgcolor: 'transparent',
             hovermode: 'closest', dragmode: false

@@ -63,6 +63,30 @@
                 <h3 class="text-xl font-bold text-slate-700">PANNES & URGENCES</h3>
                 <p class="text-sm text-slate-500 text-center">Checklists de secours et procédures d'urgence.</p>
             </button>
+            <button id="btn-nav-settings" class="bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-gray-400 p-8 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center gap-4 md:col-span-2">
+                <div class="bg-gray-100 p-4 rounded-full">
+                    <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-700">RÉGLAGES BASE DE DONNÉES</h3>
+                <p class="text-sm text-slate-500 text-center">Gérer les aéronefs, les profils de vol et l'exportation.</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- VUE REGLAGES -->
+    <div id="view-settings" class="app-view hidden flex-1 bg-slate-100 flex-row overflow-hidden">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md z-10 flex flex-col p-4 border-r border-slate-200">
+            <h2 class="text-lg font-black text-slate-800 mb-6 px-2">Réglages</h2>
+            <nav class="flex flex-col gap-2">
+                <button id="tab-fleet" class="text-left px-4 py-3 rounded-lg bg-blue-50 text-blue-700 font-bold hover:bg-blue-100 transition">Flotte & Aéronefs</button>
+                <button id="tab-scenarios" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Profils de Vol</button>
+                <button id="tab-export" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Import / Export</button>
+            </nav>
+        </div>
+        <!-- Contenu -->
+        <div class="flex-1 overflow-y-auto p-8 relative" id="settings-content">
+            <!-- Rempli par app.js -->
         </div>
     </div>
 
@@ -182,6 +206,7 @@
     <!-- Base de données (Modifiable par l'utilisateur) -->
     <script src="data.js"></script>
     <script src="app.js"></script>
+    <script src="settings.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {

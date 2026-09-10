@@ -366,6 +366,10 @@ function showView(viewId) {
         if (viewId === 'view-perf') {
             targetView.classList.add('flex');
             drawCharts();
+        } else if (viewId === 'view-settings') {
+            targetView.classList.add('flex');
+            // Select default tab
+            document.getElementById('tab-fleet').click();
         }
     }
 
@@ -377,23 +381,62 @@ function showView(viewId) {
     }
 }
 
-// Initialisation au chargement
-document.addEventListener('DOMContentLoaded', () => {
-    // Remplir le select des avions
+window.updateAircraftSelector = function() {
     const selectAircraft = document.getElementById('selectAircraft');
+    const currentVal = selectAircraft.value;
+    selectAircraft.innerHTML = '';
     for (const [immat, data] of Object.entries(fleetDatabase)) {
         const opt = document.createElement('option');
         opt.value = immat;
-        opt.textContent = `${immat} (${data.number})`;
+        opt.textContent = `${immat} (${data.number || '-'}) - ${data.config || 'LISSE'}`;
         selectAircraft.appendChild(opt);
     }
+    if (fleetDatabase[currentVal]) {
+        selectAircraft.value = currentVal;
+    } else {
+        const first = Object.keys(fleetDatabase)[0];
+        if (first) {
+            selectAircraft.value = first;
+            globalState.aircraft = first;
+        }
+    }
+    updateAircraftMass();
+    syncUI();
+};
 
-    // Écouteurs de navigation
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Charger la BD locale (fonction définie dans settings.js)
+    if (typeof loadUserDatabase === 'function') loadUserDatabase();
+
+    // 2. Remplir le sélecteur
+    updateAircraftSelector();
+
+    // 3. Écouteurs de navigation
     document.getElementById('btn-nav-perf').addEventListener('click', () => showView('view-perf'));
     document.getElementById('btn-nav-pannes').addEventListener('click', () => showView('view-pannes'));
+    document.getElementById('btn-nav-settings').addEventListener('click', () => showView('view-settings'));
     document.getElementById('btn-back-home').addEventListener('click', () => showView('view-home'));
 
-    // Écouteurs Inputs
+    // 4. Écouteurs Réglages (Tabs)
+    if (document.getElementById('tab-fleet')) {
+        document.getElementById('tab-fleet').addEventListener('click', (e) => {
+            document.querySelectorAll('#view-settings nav button').forEach(b => { b.classList.remove('bg-blue-50','text-blue-700','font-bold'); b.classList.add('text-slate-600','font-medium'); });
+            e.target.classList.add('bg-blue-50','text-blue-700','font-bold');
+            if (typeof renderSettingsFleet === 'function') renderSettingsFleet();
+        });
+        document.getElementById('tab-scenarios').addEventListener('click', (e) => {
+            document.querySelectorAll('#view-settings nav button').forEach(b => { b.classList.remove('bg-blue-50','text-blue-700','font-bold'); b.classList.add('text-slate-600','font-medium'); });
+            e.target.classList.add('bg-blue-50','text-blue-700','font-bold');
+            if (typeof renderSettingsScenarios === 'function') renderSettingsScenarios();
+        });
+        document.getElementById('tab-export').addEventListener('click', (e) => {
+            document.querySelectorAll('#view-settings nav button').forEach(b => { b.classList.remove('bg-blue-50','text-blue-700','font-bold'); b.classList.add('text-slate-600','font-medium'); });
+            e.target.classList.add('bg-blue-50','text-blue-700','font-bold');
+            if (typeof renderSettingsExport === 'function') renderSettingsExport();
+        });
+    }
+
+    // 5. Écouteurs Inputs
     document.getElementById('selectAircraft').addEventListener('change', (e) => { globalState.aircraft = e.target.value; updateAircraftMass(); syncUI(); });
     document.getElementById('tempInput').addEventListener('input', (e) => { globalState.temp = parseFloat(e.target.value); syncUI(); });
     document.getElementById('qnhInput').addEventListener('input', (e) => { globalState.qnh = parseFloat(e.target.value); syncUI(); });
@@ -405,7 +448,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnModeMass').addEventListener('click', () => { globalState.mode = 'MASS'; syncUI(); });
 
     // Init state
-    updateAircraftMass();
-    syncUI();
     showView('view-home');
 });

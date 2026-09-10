@@ -513,7 +513,7 @@ function render7Alpha() {
         
         let colorClasses = 'bg-[#2a2015] border-[#4a3520] text-amber-500 hover:bg-amber-500 hover:text-black hover:border-amber-400 hover:shadow-[0_0_15px_rgba(245,158,11,0.8)]';
 
-        btn.className = 'h-12 rounded-sm font-bold text-[14px] uppercase leading-none border-2 transition-all duration-200 flex items-center justify-center text-center p-1 7-alpha-btn ' + colorClasses;
+        btn.className = 'h-12 rounded-sm font-bold text-[14px] uppercase leading-none border-2 transition-all duration-200 flex items-center justify-center text-center p-1 btn-7-alpha ' + colorClasses;
         btn.innerHTML = voyant.label;
         btn.onclick = () => loadPdf(voyant.pdf, btn, true);
         
@@ -539,38 +539,47 @@ function renderAutresPannes() {
 }
 
 function loadPdf(pdfUrl, btnElement, is7Alpha) {
-    document.querySelectorAll('.7-alpha-btn').forEach(b => {
-        b.classList.remove('bg-amber-500', 'text-black', 'border-amber-400', 'shadow-[0_0_15px_rgba(245,158,11,0.8)]', 'z-10');
-        b.classList.add('bg-[#2a2015]', 'border-[#4a3520]', 'text-amber-500');
-    });
-    document.querySelectorAll('.list-panne-btn').forEach(b => {
-        b.classList.remove('border-red-500', 'ring-2', 'ring-red-100');
-        b.classList.add('border-slate-200');
-    });
+    try {
+        console.log('Loading PDF:', pdfUrl);
+        document.querySelectorAll('.btn-7-alpha').forEach(b => {
+            b.classList.remove('bg-amber-500', 'text-black', 'border-amber-400', 'shadow-[0_0_15px_rgba(245,158,11,0.8)]', 'z-10');
+            b.classList.add('bg-[#2a2015]', 'border-[#4a3520]', 'text-amber-500');
+        });
+        document.querySelectorAll('.list-panne-btn').forEach(b => {
+            b.classList.remove('border-red-500', 'ring-2', 'ring-red-100');
+            b.classList.add('border-slate-200');
+        });
 
-    if (btnElement) {
-        if (is7Alpha) {
-            btnElement.classList.remove('bg-[#2a2015]', 'border-[#4a3520]', 'text-amber-500');
-            btnElement.classList.add('bg-amber-500', 'text-black', 'border-amber-400', 'shadow-[0_0_15px_rgba(245,158,11,0.8)]', 'z-10');
-        } else {
-            btnElement.classList.remove('border-slate-200');
-            btnElement.classList.add('border-red-500', 'ring-2', 'ring-red-100');
+        if (btnElement) {
+            if (is7Alpha) {
+                btnElement.classList.remove('bg-[#2a2015]', 'border-[#4a3520]', 'text-amber-500');
+                btnElement.classList.add('bg-amber-500', 'text-black', 'border-amber-400', 'shadow-[0_0_15px_rgba(245,158,11,0.8)]', 'z-10');
+            } else {
+                btnElement.classList.remove('border-slate-200');
+                btnElement.classList.add('border-red-500', 'ring-2', 'ring-red-100');
+            }
         }
-    }
 
-    const iframe = document.getElementById('pdf-frame');
-    const placeholder = document.getElementById('pdf-placeholder');
-    
-    placeholder.classList.add('hidden');
-    iframe.classList.remove('hidden');
-    
-    iframe.src = encodeURI(pdfUrl);
+        const iframe = document.getElementById('pdf-frame');
+        const placeholder = document.getElementById('pdf-placeholder');
+        
+        if (placeholder) placeholder.classList.add('hidden');
+        if (iframe) {
+            iframe.classList.remove('hidden');
+            iframe.src = encodeURI(pdfUrl);
+        }
+    } catch (err) {
+        console.error('Error in loadPdf:', err);
+        alert('Erreur: ' + err.message);
+    }
 }
 
 // Initialiser au chargement
 document.addEventListener('DOMContentLoaded', () => {
     if(typeof initPannes === 'function') initPannes();
 });
+
+
 
 
 

@@ -155,29 +155,36 @@ const chartsDatabase = {
 const panneau7Alpha = [
     // Ligne 0
     { id: 'EMPTY1', label: '', color: 'none', pdf: null },
-    { id: 'PITOT', label: 'PITOT', color: 'amber', pdf: 'docs/pitot.pdf' },
+    { id: 'PITOT', label: 'PITOT', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
     { id: 'EMPTY2', label: '', color: 'none', pdf: null },
     // Ligne 1
-    { id: 'H_MOT', label: 'H.MOT', color: 'amber', pdf: 'docs/h_mot.pdf' },
-    { id: 'H_BTP', label: 'H.BTP', color: 'amber', pdf: 'docs/h_btp.pdf' },
-    { id: 'H_RAL', label: 'H.RAL', color: 'amber', pdf: 'docs/h_ral.pdf' },
+    { id: 'H_MOT', label: 'H.MOT', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
+    { id: 'H_BTP', label: 'H.BTP', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
+    { id: 'H_RAL', label: 'H.RAL', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=1' },
     // Ligne 2
-    { id: 'GENE', label: 'GENE', color: 'amber', pdf: 'docs/gene.pdf' },
-    { id: 'ALTER', label: 'ALTER', color: 'amber', pdf: 'docs/alter.pdf' },
-    { id: 'BAT', label: 'BAT.', color: 'amber', pdf: 'docs/bat.pdf' },
+    { id: 'GENE', label: 'GENE', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
+    { id: 'ALTER', label: 'ALTER', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
+    { id: 'BAT', label: 'BAT.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
     // Ligne 3
-    { id: 'PA', label: 'PA', color: 'amber', pdf: 'docs/pa.pdf' },
-    { id: 'NAV', label: 'NAV.', color: 'amber', pdf: 'docs/nav.pdf' },
-    { id: 'COMB', label: 'COMB.', color: 'amber', pdf: 'docs/comb.pdf' },
+    { id: 'PA', label: 'PA', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
+    { id: 'NAV', label: 'NAV.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
+    { id: 'COMB', label: 'COMB.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=2' },
     // Ligne 4
-    { id: 'BP_HY', label: 'BP.HY', color: 'amber', pdf: 'docs/bp_hy.pdf' },
-    { id: 'LIM', label: 'LIM', color: 'amber', pdf: 'docs/lim.pdf' },
-    { id: 'FILT', label: 'FILT.', color: 'amber', pdf: 'docs/filt.pdf' }
+    { id: 'BP_HY', label: 'BP.HY', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=3' },
+    { id: 'LIM', label: 'LIM', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=4' },
+    { id: 'FILT', label: 'FILT.', color: 'amber', pdf: 'SA 342M1/38_4-2.pdf#page=4' }
 ];
 
 const autresPannes = [
-    { id: 'INCENDIE', title: 'Incendie', pdf: 'docs/incendie.pdf' },
-    { id: 'PANNE_MOT_VOL', title: 'Panne moteur en vol', pdf: 'docs/panne_moteur_vol.pdf' },
-    { id: 'PANNE_MOT_STATIO', title: 'Panne moteur en stationnaire', pdf: 'docs/panne_moteur_statio.pdf' }
+    { id: 'AUTOROTATION', title: 'Autorotation (Perte complète de puissance)', pdf: 'SA 342M1/37_4-1.pdf#page=1' },
+    { id: 'PANNE_GTM_VOL', title: 'Arrêt du GTM en vol (Panne totale)', pdf: 'SA 342M1/37_4-1.pdf#page=2' },
+    { id: 'FONCT_ANORMAL_REGUL', title: 'Fonctionnement anormal du régulateur', pdf: 'SA 342M1/37_4-1.pdf#page=3' },
+    { id: 'FEU_GTM', title: 'Feu au GTM (Démarrage / En vol)', pdf: 'SA 342M1/37_4-1.pdf#page=4' },
+    { id: 'FUMEE_CABINE', title: 'Fumée dans la cabine', pdf: 'SA 342M1/37_4-1.pdf#page=4' },
+    { id: 'ROTOR_ANTI_COUPLE', title: 'Panne du rotor anti-couple', pdf: 'SA 342M1/37_4-1.pdf#page=5' },
+    { id: 'INCIDENT_CMDE_VOL', title: 'Incidents commandes de vol / Servo-commandes', pdf: 'SA 342M1/38_4-2.pdf#page=7' },
+    { id: 'ANOMALIE_CAP', title: 'Anomalies de cap / Gyro', pdf: 'SA 342M1/38_4-2.pdf#page=8' },
+    { id: 'PANNE_COUPLEMETRE', title: 'Panne de couplemètre', pdf: 'SA 342M1/38_4-2.pdf#page=10' }
 ];
+
 

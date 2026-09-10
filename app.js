@@ -561,12 +561,15 @@ function loadPdf(pdfUrl, btnElement, is7Alpha) {
     placeholder.classList.add('hidden');
     iframe.classList.remove('hidden');
     
-    iframe.src = pdfUrl;
+    // Remplacer les espaces par %20 pour que l'URL soit valide
+    const safeUrl = pdfUrl.replace(/ /g, '%20');
+    iframe.src = safeUrl;
 }
 
 // Initialiser au chargement
 document.addEventListener('DOMContentLoaded', () => {
     if(typeof initPannes === 'function') initPannes();
 });
+
 
 

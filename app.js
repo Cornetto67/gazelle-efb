@@ -9,7 +9,9 @@ const globalState = {
     temp: 20,
     qnh: 1013,
     elevation: 0,
-    scenario: "VOLTAC"
+    scenario: "VOLTAC",
+    mode: "ALT", // "ALT" ou "MASS"
+    targetAlt: 2000
 };
 
 // =========================================================================
@@ -160,6 +162,9 @@ function syncUI() {
     document.getElementById('massValue').textContent = Math.round(globalState.mass);
     document.getElementById('massInput').value = Math.round(globalState.mass);
 
+    document.getElementById('altValue').textContent = Math.round(globalState.targetAlt);
+    document.getElementById('altInput').value = Math.round(globalState.targetAlt);
+
     if (fleetDatabase[globalState.aircraft]) {
         document.getElementById('displayBaseMass').textContent = fleetDatabase[globalState.aircraft].emptyWeight + " kg";
     }
@@ -168,6 +173,23 @@ function syncUI() {
     globalState.pressureAlt = pAlt;
     document.getElementById('displayPressureAlt').textContent = Math.round(pAlt) + " ft";
     
+    const btnModeAlt = document.getElementById('btnModeAlt');
+    const btnModeMass = document.getElementById('btnModeMass');
+    const blockInputMass = document.getElementById('blockInputMass');
+    const blockInputAlt = document.getElementById('blockInputAlt');
+
+    if (globalState.mode === 'ALT') {
+        btnModeAlt.className = "flex-1 py-2 text-sm font-bold bg-white text-blue-700 rounded shadow-sm border border-slate-200 transition-all";
+        btnModeMass.className = "flex-1 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 rounded transition-all";
+        blockInputMass.classList.remove('hidden');
+        blockInputAlt.classList.add('hidden');
+    } else {
+        btnModeMass.className = "flex-1 py-2 text-sm font-bold bg-white text-blue-700 rounded shadow-sm border border-slate-200 transition-all";
+        btnModeAlt.className = "flex-1 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 rounded transition-all";
+        blockInputAlt.classList.remove('hidden');
+        blockInputMass.classList.add('hidden');
+    }
+
     renderScenarioTabs();
     drawCharts();
 }
@@ -211,14 +233,16 @@ function drawCharts() {
         // Entête du graphique
         const header = document.createElement('div');
         header.className = "flex justify-between items-start";
+        // Header adaptation based on mode
+        let resultTitle = globalState.mode === 'ALT' ? "Plafond Calculé" : "Masse Maximale";
         header.innerHTML = `
             <div>
                 <h3 class="font-bold text-slate-800">${chartDef.title}</h3>
                 <div class="text-xs text-slate-500 italic mt-1">Planche ${chartDef.planche || '-'}</div>
             </div>
             <div class="text-right">
-                <div class="text-xs font-bold text-slate-500 uppercase">Plafond Calculé</div>
-                <div class="text-2xl font-black text-slate-800" id="res-${chartId}">-- m</div>
+                <div class="text-xs font-bold text-slate-500 uppercase">${resultTitle}</div>
+                <div class="text-2xl font-black text-slate-800" id="res-${chartId}">--</div>
                 <div class="text-xs font-bold text-red-600 hidden" id="warn-${chartId}">HORS DOMAINE</div>
             </div>
         `;
@@ -240,14 +264,22 @@ function drawCharts() {
         layoutContainer.appendChild(divWrapper);
 
         // Calculs
-        let finalMass = globalState.mass;
-        let rawAlt = getCalculatedValue(chartId, 'ALT');
-        let finalAlt = rawAlt || 0;
+        let finalMass = 1400;
+        let finalAlt = 0;
+        let calcValue = getCalculatedValue(chartId, globalState.mode);
+
+        if (globalState.mode === 'ALT') {
+            finalMass = globalState.mass;
+            finalAlt = calcValue || 0;
+        } else {
+            finalAlt = globalState.targetAlt;
+            finalMass = calcValue || 1400;
+        }
         
         const resEl = document.getElementById(`res-${chartId}`);
         const warnEl = document.getElementById(`warn-${chartId}`);
 
-        if (!rawAlt) {
+        if (calcValue === null) {
             resEl.innerHTML = '<span class="text-amber-500">N/A</span>';
             Plotly.react(plotDiv, [], {
                 title: 'Abaque non numérisé',
@@ -261,11 +293,11 @@ function drawCharts() {
         let inEnvelope = isPointInEnvelope(finalMass, finalAlt, chartDef.limitEnvelope);
         if (!inEnvelope) {
             resEl.className = "text-2xl font-black text-red-600";
-            resEl.textContent = Math.round(finalAlt) + " m";
+            resEl.textContent = globalState.mode === 'ALT' ? Math.round(finalAlt) + " m" : Math.round(finalMass) + " kg";
             warnEl.classList.remove('hidden');
         } else {
             resEl.className = "text-2xl font-black text-slate-800";
-            resEl.textContent = Math.round(finalAlt) + " m";
+            resEl.textContent = globalState.mode === 'ALT' ? Math.round(finalAlt) + " m" : Math.round(finalMass) + " kg";
             warnEl.classList.add('hidden');
         }
 
@@ -367,6 +399,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('qnhInput').addEventListener('input', (e) => { globalState.qnh = parseFloat(e.target.value); syncUI(); });
     document.getElementById('elevationInput').addEventListener('input', (e) => { globalState.elevation = parseFloat(e.target.value); syncUI(); });
     document.getElementById('massInput').addEventListener('input', (e) => { globalState.mass = parseFloat(e.target.value); syncUI(); });
+    document.getElementById('altInput').addEventListener('input', (e) => { globalState.targetAlt = parseFloat(e.target.value); syncUI(); });
+
+    document.getElementById('btnModeAlt').addEventListener('click', () => { globalState.mode = 'ALT'; syncUI(); });
+    document.getElementById('btnModeMass').addEventListener('click', () => { globalState.mode = 'MASS'; syncUI(); });
 
     // Init state
     updateAircraftMass();

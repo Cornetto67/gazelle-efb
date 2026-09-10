@@ -118,12 +118,18 @@
                     </div>
                 </div>
 
+                <!-- Toggle Mode -->
+                <div class="bg-slate-100 p-1 rounded-lg flex gap-1">
+                    <button id="btnModeAlt" class="flex-1 py-2 text-sm font-bold bg-white text-blue-700 rounded shadow-sm border border-slate-200 transition-all">Chercher Plafond</button>
+                    <button id="btnModeMass" class="flex-1 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 rounded transition-all">Chercher Masse Max</button>
+                </div>
+
                 <div class="h-px bg-gray-100"></div>
 
-                <!-- Input: Masse (Mode Forçage) -->
-                <div>
+                <!-- Input: Masse (Visible en Mode Altitude) -->
+                <div id="blockInputMass">
                     <div class="flex justify-between items-end mb-3">
-                        <label class="block text-sm font-bold text-slate-700">Masse au décollage (estimée)</label>
+                        <label class="block text-sm font-bold text-slate-700">Masse de l'appareil</label>
                         <div class="text-right">
                             <span id="massValue" class="text-2xl font-black text-blue-600">1900</span>
                             <span class="text-sm font-medium text-slate-500">kg</span>
@@ -132,6 +138,21 @@
                     <input type="range" id="massInput" min="1400" max="2200" step="10" value="1900" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer slider-thumb">
                     <div class="flex justify-between text-xs text-slate-400 mt-2 font-medium">
                         <span>1400 kg</span><span>2200 kg</span>
+                    </div>
+                </div>
+
+                <!-- Input: Altitude (Visible en Mode Masse) -->
+                <div id="blockInputAlt" class="hidden">
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="block text-sm font-bold text-slate-700">Altitude Pression (Cible)</label>
+                        <div class="text-right">
+                            <span id="altValue" class="text-2xl font-black text-blue-600">2000</span>
+                            <span class="text-sm font-medium text-slate-500">m</span>
+                        </div>
+                    </div>
+                    <input type="range" id="altInput" min="-1000" max="4000" step="50" value="2000" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    <div class="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                        <span>-1000 m</span><span>4000 m</span>
                     </div>
                 </div>
 

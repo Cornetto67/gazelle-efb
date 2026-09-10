@@ -62,43 +62,47 @@ function renderSettingsFleet() {
 
 window.editAircraft = function(existingImmat) {
     const isNew = !existingImmat;
-    const data = existingImmat ? fleetDatabase[existingImmat] : { config: "LISSE", emptyWeight: 1250, emptyMomLong: 4500, emptyMomLat: 10, number: "" };
+    const data = existingImmat ? fleetDatabase[existingImmat] : { config: "LISSE", emptyWeight: 1250, centrage: 4.0, number: "" };
     
+    // Garder la compatibilité si anciennes données avec momLong
+    let centrageVal = data.centrage !== undefined ? data.centrage : (data.emptyMomLong ? data.emptyMomLong / data.emptyWeight : 0);
+    // Arrondir pour affichage
+    if (centrageVal > 0) centrageVal = centrageVal.toFixed(2);
+
     const container = document.getElementById('settings-content');
     container.innerHTML = `
         <h3 class="text-2xl font-black text-slate-800 mb-6">${isNew ? "Ajouter un aéronef" : "Modifier " + existingImmat}</h3>
         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 max-w-xl">
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Immatriculation</label>
-                    <input type="text" id="frm-immat" value="${existingImmat}" ${!isNew ? 'readonly class="w-full border-2 border-slate-100 bg-slate-50 rounded p-2 text-slate-500 font-bold"' : 'class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500" placeholder="ex: F-MXXX"'}>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Indicatif</label>
+                    <input type="text" id="frm-immat" value="${existingImmat || ''}" ${!isNew ? 'readonly class="w-full border-2 border-slate-100 bg-slate-50 rounded p-2 text-slate-500 font-bold"' : 'class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500" placeholder="ex: F-MXXX"'} >
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Numéro</label>
-                    <input type="text" id="frm-num" value="${data.number || ''}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500">
+                    <input type="text" id="frm-num" value="${data.number || ''}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500" placeholder="ex: 5678">
                 </div>
             </div>
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Configuration (Standard)</label>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Masse à vide (kg)</label>
+                    <input type="number" id="frm-weight" value="${data.emptyWeight}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Centrage</label>
+                    <input type="number" step="0.01" id="frm-centrage" value="${centrageVal}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Configuration (Nécessaire au calcul)</label>
                 <select id="frm-config" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500">
                     <option value="LISSE" ${data.config === 'LISSE' ? 'selected' : ''}>LISSE (Sans armement)</option>
                     <option value="ARME" ${data.config === 'ARME' ? 'selected' : ''}>ARMÉ (4 HOT, Viviane...)</option>
                 </select>
             </div>
-            <div class="grid grid-cols-3 gap-4 mb-6">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Masse vide (kg)</label>
-                    <input type="number" id="frm-weight" value="${data.emptyWeight}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mom. Longi.</label>
-                    <input type="number" id="frm-mlong" value="${data.emptyMomLong}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mom. Lat.</label>
-                    <input type="number" id="frm-mlat" value="${data.emptyMomLat}" class="w-full border-2 border-slate-200 rounded p-2 text-slate-800 font-bold focus:border-blue-500">
-                </div>
-            </div>
+
             <div class="flex gap-3">
                 <button onclick="saveAircraft('${existingImmat}')" class="flex-1 bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">Enregistrer</button>
                 <button onclick="renderSettingsFleet()" class="bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded hover:bg-slate-300 transition">Annuler</button>
@@ -109,14 +113,13 @@ window.editAircraft = function(existingImmat) {
 
 window.saveAircraft = function(oldImmat) {
     const immat = document.getElementById('frm-immat').value.trim();
-    if (!immat) return alert("L'immatriculation est obligatoire");
+    if (!immat) return alert("L'indicatif est obligatoire");
     
     fleetDatabase[immat] = {
         number: document.getElementById('frm-num').value.trim(),
         config: document.getElementById('frm-config').value,
         emptyWeight: parseFloat(document.getElementById('frm-weight').value) || 0,
-        emptyMomLong: parseFloat(document.getElementById('frm-mlong').value) || 0,
-        emptyMomLat: parseFloat(document.getElementById('frm-mlat').value) || 0
+        centrage: parseFloat(document.getElementById('frm-centrage').value) || 0
     };
     
     saveUserDatabase();

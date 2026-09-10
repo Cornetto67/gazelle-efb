@@ -397,8 +397,11 @@ function showView(viewId) {
             drawCharts();
         } else if (viewId === 'view-settings') {
             targetView.classList.add('flex');
-            // Select default tab
             document.getElementById('tab-fleet').click();
+        } else if (viewId === 'view-pannes') {
+            targetView.classList.add('flex');
+        } else if (viewId === 'view-home') {
+            targetView.classList.add('flex');
         }
     }
 
@@ -561,15 +564,16 @@ function loadPdf(pdfUrl, btnElement, is7Alpha) {
     placeholder.classList.add('hidden');
     iframe.classList.remove('hidden');
     
-    // Remplacer les espaces par %20 pour que l'URL soit valide
-    const safeUrl = pdfUrl.replace(/ /g, '%20');
-    iframe.src = safeUrl;
+    iframe.src = encodeURI(pdfUrl);
 }
 
 // Initialiser au chargement
 document.addEventListener('DOMContentLoaded', () => {
     if(typeof initPannes === 'function') initPannes();
 });
+
+
+
 
 
 

@@ -153,32 +153,31 @@ const chartsDatabase = {
 // PANNEAU 7 ALPHA (CWP) & AUTRES PANNES
 // =========================================================================
 const panneau7Alpha = [
-    // Ligne 1
-    { id: 'P_HUILE_BTP', label: 'P. HUILE<br>B.T.P.', color: 'red', pdf: 'docs/p_huile_btp.pdf' },
-    { id: 'T_HUILE_BTP', label: 'T. HUILE<br>B.T.P.', color: 'amber', pdf: 'docs/t_huile_btp.pdf' },
-    { id: 'P_HUILE_MOT', label: 'P. HUILE<br>MOTEUR', color: 'red', pdf: 'docs/p_huile_mot.pdf' },
-    { id: 'T_HUILE_MOT', label: 'T. HUILE<br>MOTEUR', color: 'amber', pdf: 'docs/t_huile_mot.pdf' },
-    // Ligne 2
-    { id: 'HYD', label: 'HYD', color: 'red', pdf: 'docs/hyd.pdf' },
-    { id: 'LIM_BTP', label: 'LIM<br>B.T.P.', color: 'amber', pdf: 'docs/lim_btp.pdf' },
-    { id: 'LIM_MOT', label: 'LIM<br>MOTEUR', color: 'amber', pdf: 'docs/lim_mot.pdf' },
-    { id: 'REGUL', label: 'REGUL', color: 'amber', pdf: 'docs/regul.pdf' },
-    // Ligne 3
-    { id: 'GENE', label: 'GENE', color: 'amber', pdf: 'docs/gene.pdf' },
-    { id: 'BAT', label: 'BAT', color: 'amber', pdf: 'docs/bat.pdf' },
-    { id: 'POMPE', label: 'POMPE<br>GAV.', color: 'amber', pdf: 'docs/pompe.pdf' },
-    { id: 'FILTRE', label: 'FILTRE<br>CARBU', color: 'amber', pdf: 'docs/filtre.pdf' },
-    // Ligne 4
-    { id: 'JAUGE', label: 'JAUGE', color: 'amber', pdf: 'docs/jauge.pdf' },
+    // Ligne 0
+    { id: 'EMPTY1', label: '', color: 'none', pdf: null },
     { id: 'PITOT', label: 'PITOT', color: 'amber', pdf: 'docs/pitot.pdf' },
-    { id: 'PORTE', label: 'PORTES', color: 'amber', pdf: 'docs/portes.pdf' },
-    { id: 'EMBRAY', label: 'EMBRAY', color: 'amber', pdf: 'docs/embrayage.pdf' }
+    { id: 'EMPTY2', label: '', color: 'none', pdf: null },
+    // Ligne 1
+    { id: 'H_MOT', label: 'H.MOT', color: 'amber', pdf: 'docs/h_mot.pdf' },
+    { id: 'H_BTP', label: 'H.BTP', color: 'amber', pdf: 'docs/h_btp.pdf' },
+    { id: 'H_RAL', label: 'H.RAL', color: 'amber', pdf: 'docs/h_ral.pdf' },
+    // Ligne 2
+    { id: 'GENE', label: 'GENE', color: 'amber', pdf: 'docs/gene.pdf' },
+    { id: 'ALTER', label: 'ALTER', color: 'amber', pdf: 'docs/alter.pdf' },
+    { id: 'BAT', label: 'BAT.', color: 'amber', pdf: 'docs/bat.pdf' },
+    // Ligne 3
+    { id: 'PA', label: 'PA', color: 'amber', pdf: 'docs/pa.pdf' },
+    { id: 'NAV', label: 'NAV.', color: 'amber', pdf: 'docs/nav.pdf' },
+    { id: 'COMB', label: 'COMB.', color: 'amber', pdf: 'docs/comb.pdf' },
+    // Ligne 4
+    { id: 'BP_HY', label: 'BP.HY', color: 'amber', pdf: 'docs/bp_hy.pdf' },
+    { id: 'LIM', label: 'LIM', color: 'amber', pdf: 'docs/lim.pdf' },
+    { id: 'FILT', label: 'FILT.', color: 'amber', pdf: 'docs/filt.pdf' }
 ];
 
 const autresPannes = [
-    { id: 'INCENDIE_SOL', title: 'Incendie au sol', pdf: 'docs/incendie_sol.pdf' },
-    { id: 'INCENDIE_VOL', title: 'Incendie en vol', pdf: 'docs/incendie_vol.pdf' },
+    { id: 'INCENDIE', title: 'Incendie', pdf: 'docs/incendie.pdf' },
     { id: 'PANNE_MOT_VOL', title: 'Panne moteur en vol', pdf: 'docs/panne_moteur_vol.pdf' },
-    { id: 'PANNE_MOT_STATIO', title: 'Panne moteur en stationnaire', pdf: 'docs/panne_moteur_statio.pdf' },
-    { id: 'GOUVERNE', title: 'Panne de gouverne de direction', pdf: 'docs/gouverne.pdf' }
+    { id: 'PANNE_MOT_STATIO', title: 'Panne moteur en stationnaire', pdf: 'docs/panne_moteur_statio.pdf' }
 ];
+

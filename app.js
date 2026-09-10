@@ -499,24 +499,18 @@ function render7Alpha() {
     container.innerHTML = '';
 
     panneau7Alpha.forEach(voyant => {
-        if (!voyant) {
+        if (!voyant || voyant.color === 'none') {
             const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'bg-slate-800 rounded shadow-inner border border-slate-700 h-14';
+            emptyDiv.className = 'h-12';
             container.appendChild(emptyDiv);
             return;
         }
 
         const btn = document.createElement('button');
-        let colorClasses = '';
-        if (voyant.color === 'red') {
-            colorClasses = 'bg-red-600 hover:bg-red-500 text-white shadow-[0_0_10px_rgba(220,38,38,0.6)]';
-        } else if (voyant.color === 'amber') {
-            colorClasses = 'bg-amber-500 hover:bg-amber-400 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.6)]';
-        } else {
-            colorClasses = 'bg-slate-600 hover:bg-slate-500 text-white';
-        }
+        
+        let colorClasses = 'bg-[#2a2015] border-[#4a3520] text-amber-500 hover:bg-amber-500 hover:text-black hover:border-amber-400 hover:shadow-[0_0_15px_rgba(245,158,11,0.8)]';
 
-        btn.className = 'h-14 rounded-md font-bold text-[10px] uppercase leading-tight border border-white/20 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center text-center p-1 7-alpha-btn ' + colorClasses;
+        btn.className = 'h-12 rounded-sm font-bold text-[14px] uppercase leading-none border-2 transition-all duration-200 flex items-center justify-center text-center p-1 7-alpha-btn ' + colorClasses;
         btn.innerHTML = voyant.label;
         btn.onclick = () => loadPdf(voyant.pdf, btn, true);
         
@@ -543,7 +537,8 @@ function renderAutresPannes() {
 
 function loadPdf(pdfUrl, btnElement, is7Alpha) {
     document.querySelectorAll('.7-alpha-btn').forEach(b => {
-        b.classList.remove('ring-4', 'ring-white', 'z-10');
+        b.classList.remove('bg-amber-500', 'text-black', 'border-amber-400', 'shadow-[0_0_15px_rgba(245,158,11,0.8)]', 'z-10');
+        b.classList.add('bg-[#2a2015]', 'border-[#4a3520]', 'text-amber-500');
     });
     document.querySelectorAll('.list-panne-btn').forEach(b => {
         b.classList.remove('border-red-500', 'ring-2', 'ring-red-100');
@@ -552,7 +547,8 @@ function loadPdf(pdfUrl, btnElement, is7Alpha) {
 
     if (btnElement) {
         if (is7Alpha) {
-            btnElement.classList.add('ring-4', 'ring-white', 'z-10');
+            btnElement.classList.remove('bg-[#2a2015]', 'border-[#4a3520]', 'text-amber-500');
+            btnElement.classList.add('bg-amber-500', 'text-black', 'border-amber-400', 'shadow-[0_0_15px_rgba(245,158,11,0.8)]', 'z-10');
         } else {
             btnElement.classList.remove('border-slate-200');
             btnElement.classList.add('border-red-500', 'ring-2', 'ring-red-100');
@@ -572,3 +568,5 @@ function loadPdf(pdfUrl, btnElement, is7Alpha) {
 document.addEventListener('DOMContentLoaded', () => {
     if(typeof initPannes === 'function') initPannes();
 });
+
+

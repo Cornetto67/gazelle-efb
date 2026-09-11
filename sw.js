@@ -1,11 +1,11 @@
-const CACHE_NAME = 'gazelle-efb-v8';
+const CACHE_NAME = 'gazelle-efb-v9';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './app.js',
     './data.js',
-    'https://cdn.tailwindcss.com',
-    'https://cdn.plot.ly/plotly-2.27.0.min.js'
+    './libs/tailwindcss.js',
+    './libs/plotly.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -49,6 +49,7 @@ self.addEventListener('activate', (event) => {
         })
     );
 });
+
 
 
 

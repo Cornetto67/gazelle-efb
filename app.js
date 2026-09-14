@@ -585,3 +585,85 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+
+
+
+function renderGtmTableHtml(chartDef, plotDiv) {
+    const isFAS = chartDef.filterType === 'FAS';
+    const matDec = isFAS ? torqueRender.FAS_DEC : torqueRender.TUYERE_DEC;
+    const matCont = isFAS ? torqueRender.FAS_CONT : torqueRender.TUYERE_CONT;
+    const alts = [4000, 3000, 2000, 1000, 0, -500]; // On affiche du haut vers le bas
+    const altIdxs = [5, 4, 3, 2, 1, 0];
+    const temps = [-40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
+
+    // Calcul de la case pénalisante : 
+    // Altitude = première altitude >= pressureAlt
+    let activeAltIdx = 5; 
+    for (let i = 0; i < torqueLimits.alts.length; i++) {
+        if (torqueLimits.alts[i] >= globalState.pressureAlt) {
+            activeAltIdx = i;
+            break;
+        }
+    }
+    if (globalState.pressureAlt < -500) activeAltIdx = 0;
+
+    // Température = première temp >= temp
+    let activeTempIdx = 9;
+    for (let j = 0; j < temps.length; j++) {
+        if (temps[j] >= globalState.temp) {
+            activeTempIdx = j;
+            break;
+        }
+    }
+    if (globalState.temp < -40) activeTempIdx = 0;
+
+    const buildTableHTML = (title, mat, fullDataMat) => {
+        let valToDisplay = fullDataMat[activeAltIdx][activeTempIdx];
+        if (valToDisplay === null) valToDisplay = "Interdit";
+        else if (valToDisplay === 100) valToDisplay = "100";
+
+        let html = `
+            <div class="mb-4">
+                <div class="flex justify-between items-end mb-2">
+                    <h4 class="font-bold text-slate-700">${title}</h4>
+                    <div class="text-right text-xs bg-slate-100 p-1 px-2 rounded border border-slate-200">
+                        Valeur lue : <span class="font-black text-red-600 text-base">${valToDisplay}</span> %
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-[11px] sm:text-xs border-collapse border border-slate-800 text-center">
+                        <thead>
+                            <tr class="bg-slate-100">
+                                <th class="border border-slate-800 p-1 font-bold">ALT. PRES.</th>
+        `;
+        temps.forEach(t => { html += `<th class="border border-slate-800 p-1">${t}</th>`; });
+        html += `           </tr>
+                        </thead>
+                        <tbody>`;
+        
+        for (let i = 0; i < alts.length; i++) {
+            let altDisplay = alts[i];
+            let mappedIdx = altIdxs[i];
+            html += `<tr><td class="border border-slate-800 font-bold p-1 bg-slate-50">${altDisplay}</td>`;
+            for (let j = 0; j < temps.length; j++) {
+                let cellVal = mat[mappedIdx][j];
+                let isTarget = (mappedIdx === activeAltIdx && j === activeTempIdx);
+                let cellClass = isTarget ? `border-4 border-red-500 bg-red-100 font-black text-red-700` : `border border-slate-800`;
+                html += `<td class="${cellClass}">${cellVal}</td>`;
+            }
+            html += `</tr>`;
+        }
+        
+        html += `       </tbody>
+                    </table>
+                </div>
+            </div>`;
+        return html;
+    };
+
+    const fullDec = isFAS ? torqueLimits.FAS_DEC : torqueLimits.TUYERE_DEC;
+    const fullCont = isFAS ? torqueLimits.FAS_CONT : torqueLimits.TUYERE_CONT;
+
+    plotDiv.innerHTML = buildTableHTML("COUPLE MAXI 5 mn (Décollage)", matDec, fullDec) + buildTableHTML("COUPLE MAXI CONTINU", matCont, fullCont);
+}

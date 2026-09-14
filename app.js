@@ -222,167 +222,30 @@ function drawCharts() {
     const scenario = scenariosDatabase[globalState.scenario];
     if (!scenario) return;
 
-    const aircraftConfig = fleetDatabase[globalState.aircraft]?.config || "LISSE";
-    const currentSignature = globalState.scenario + "_" + aircraftConfig + "_" + globalState.mode;
+    const aircraftConfig = fleetDatabase[globalState.aircraft]?.config || LISSE;
+    const currentSignature = globalState.scenario + _ + aircraftConfig + _ + globalState.mode;
 
-    // Si la structure (scénario, config, mode) a changé, on reconstruit le DOM
+    // Trier pour forcer les tableaux GTM en premier
+    const sortedCharts = [...scenario.charts].sort((a, b) => {
+        const defA = chartsDatabase[a.replace('SUFFIX', aircraftConfig)];
+        const defB = chartsDatabase[b.replace('SUFFIX', aircraftConfig)];
+        if (defA?.isGTM && !defB?.isGTM) return -1;
+        if (!defA?.isGTM && defB?.isGTM) return 1;
+        return 0;
+    });
+
+    // Si la structure a changé, on reconstruit le DOM
     if (layoutContainer.dataset.signature !== currentSignature) {
         layoutContainer.innerHTML = '';
         layoutContainer.dataset.signature = currentSignature;
 
-        scenario.charts.forEach(rawChartId => {
+        sortedCharts.forEach(rawChartId => {
             const chartId = rawChartId.replace('SUFFIX', aircraftConfig);
             const chartDef = chartsDatabase[chartId];
             if (!chartDef) return;
 
             const divWrapper = document.createElement('div');
-            divWrapper.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4";
-            
-            const header = document.createElement('div');
-            header.className = "flex justify-between items-start";
-            let resultTitle = globalState.mode === 'ALT' ? "Plafond Calculé" : "Masse Maximale";
-            header.innerHTML = `
-                <div>
-                    <h3 class="font-bold text-slate-800">${chartDef.title}</h3>
-                    <div class="text-xs text-slate-500 italic mt-1">Planche ${chartDef.planche || '-'}</div>
-                </div>
-                <div class="text-right">
-                    <div class="text-xs font-bold text-slate-500 uppercase">${resultTitle}</div>
-                    <div class="text-2xl font-black text-slate-800" id="res-${chartId}">--</div>
-                    <div class="text-xs font-bold text-red-600 hidden" id="warn-${chartId}">HORS DOMAINE</div>
-                </div>
-            `;
-            divWrapper.appendChild(header);
-
-            if (chartDef.conditions) {
-                const conds = document.createElement('div');
-                conds.className = "text-xs bg-slate-50 p-2 rounded border border-slate-100";
-                conds.innerHTML = `<span class="font-bold text-slate-700">Conditions : </span><span class="text-slate-600">${chartDef.conditions.join(', ')}</span>`;
-                divWrapper.appendChild(conds);
-            }
-
-            const plotDiv = document.createElement('div');
-            plotDiv.id = `plot-${chartId}`;
-            plotDiv.style.height = "350px";
-            plotDiv.className = "w-full";
-            divWrapper.appendChild(plotDiv);
-            layoutContainer.appendChild(divWrapper);
-        });
-    }
-
-    // Mise à jour des valeurs et tracés Plotly
-    scenario.charts.forEach(rawChartId => {
-        const chartId = rawChartId.replace('SUFFIX', aircraftConfig);
-        const chartDef = chartsDatabase[chartId];
-        if (!chartDef) return;
-
-        const plotDiv = document.getElementById(`plot-${chartId}`);
-        const resEl = document.getElementById(`res-${chartId}`);
-        const warnEl = document.getElementById(`warn-${chartId}`);
-        if (!plotDiv || !resEl || !warnEl) return;
-
-        const activeData = chartDef.curves || [];
-
-        let finalMass = 1400;
-        let finalAlt = 0;
-        let calcValue = getCalculatedValue(chartId, globalState.mode);
-
-        if (globalState.mode === 'ALT') {
-            finalMass = globalState.mass;
-            finalAlt = calcValue || 0;
-        } else {
-            finalAlt = globalState.targetAlt;
-            finalMass = calcValue || 1400;
-        }
-        
-        if (calcValue === null) {
-            resEl.innerHTML = '<span class="text-amber-500">N/A</span>';
-            Plotly.react(plotDiv, [], {
-                title: 'Abaque non numérisé',
-                xaxis: { range: [1400, 2250], visible: false },
-                yaxis: { range: [-1000, 6000], visible: false },
-                plot_bgcolor: '#f8fafc', paper_bgcolor: 'transparent'
-            }, { displayModeBar: false });
-            return;
-        }
-
-        let inEnvelope = isPointInEnvelope(finalMass, finalAlt, chartDef.limitEnvelope);
-        if (!inEnvelope) {
-            resEl.className = "text-2xl font-black text-red-600";
-            resEl.textContent = globalState.mode === 'ALT' ? Math.round(finalAlt) + " m" : Math.round(finalMass) + " kg";
-            warnEl.classList.remove('hidden');
-        } else {
-            resEl.className = "text-2xl font-black text-slate-800";
-            resEl.textContent = globalState.mode === 'ALT' ? Math.round(finalAlt) + " m" : Math.round(finalMass) + " kg";
-            warnEl.classList.add('hidden');
-        }
-
-        const plotlyCurves = activeData.map(curve => {
-            const sortedPts = [...curve.points].sort((a,b) => a.x - b.x);
-            return { t: curve.temp, x: sortedPts.map(p=>p.x), y: sortedPts.map(p=>p.y) };
-        });
-
-        const traces = plotlyCurves.map(curve => {
-            const textArr = curve.x.map((_, i) => i === curve.x.length - 1 ? `${curve.t}°` : '');
-            return {
-                x: curve.x, y: curve.y, text: textArr, mode: 'lines+text', textposition: 'middle right',
-                textfont: { color: '#94a3b8', size: 11, family: 'sans-serif' },
-                line: { color: '#cbd5e1', width: 2 }, name: `${curve.t}°C`, hoverinfo: 'name', showlegend: false
-            };
-        });
-
-        let limitTrace = {
-            x: [1400, 2200], y: [4000, 4000], mode: 'lines',
-            line: { color: '#0f172a', width: 3 }, name: 'Limite', hoverinfo: 'none', showlegend: false
-        };
-
-        if (chartDef.limitEnvelope && chartDef.limitEnvelope.length > 0) {
-            limitTrace = {
-                x: chartDef.limitEnvelope.map(p => p.x),
-                y: chartDef.limitEnvelope.map(p => p.y),
-                mode: 'lines',
-                line: { color: '#0f172a', width: 4 },
-                name: 'Domaine Approuvé',
-                hoverinfo: 'none',
-                showlegend: false
-            };
-            limitTrace.x.push(limitTrace.x[0]);
-            limitTrace.y.push(limitTrace.y[0]);
-        }
-        traces.push(limitTrace);
-
-        let plotMass = Math.max(1400, Math.min(finalMass, 2245));
-        let plotAlt = Math.max(-1000, Math.min(finalAlt, 6000));
-
-        traces.push({
-            x: [plotMass, plotMass, 1400], y: [-1000, plotAlt, plotAlt],
-            mode: 'lines', line: { color: '#ef4444', width: 2, dash: 'dashdot' }, hoverinfo: 'none', showlegend: false
-        });
-        
-        traces.push({
-            x: [plotMass], y: [plotAlt], mode: 'markers',
-            marker: { color: '#ef4444', size: 10, line: {color: 'white', width: 2} },
-            name: 'Lecture', hovertemplate: `Masse: ${Math.round(finalMass)} kg<br>Altitude: ${Math.round(finalAlt)} m<extra></extra>`,
-            showlegend: false
-        });
-
-        const layout = {
-            xaxis: { title: chartDef.xAxisLabel || 'MASSE (kg)', range: [1400, 2250], dtick: 100, gridcolor: '#f1f5f9', zeroline: false },
-            yaxis: { title: chartDef.yAxisLabel || 'ALTITUDE PRESSION (m)', range: [-1000, 6000], dtick: 1000, gridcolor: '#e2e8f0', zeroline: true },
-            margin: { l: 70, r: 40, t: 80, b: 60 }, plot_bgcolor: '#ffffff', paper_bgcolor: 'transparent',
-            hovermode: 'closest', dragmode: false
-        };
-
-        Plotly.react(plotDiv, traces, layout, { responsive: true, displayModeBar: false });
-    });
-}
-
-window.triggerChartsRedraw = drawCharts;
-
-// =========================================================================
-// ROUTEUR SPA (Navigation entre les vues)
-// =========================================================================
-
+            divWrapper.className = bg-white
 function showView(viewId) {
     document.querySelectorAll('.app-view').forEach(el => {
         el.classList.add('hidden');
@@ -597,8 +460,8 @@ function renderGtmTableHtml(chartDef, plotDiv) {
     const altIdxs = [5, 4, 3, 2, 1, 0];
     const temps = [-40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
 
-    // Calcul de la case p�nalisante : 
-    // Altitude = premi�re altitude >= pressureAlt
+    // Calcul de la case p�nalisante : 
+    // Altitude = premi�re altitude >= pressureAlt
     let activeAltIdx = 5; 
     for (let i = 0; i < torqueLimits.alts.length; i++) {
         if (torqueLimits.alts[i] >= globalState.pressureAlt) {
@@ -608,7 +471,7 @@ function renderGtmTableHtml(chartDef, plotDiv) {
     }
     if (globalState.pressureAlt < -500) activeAltIdx = 0;
 
-    // Temp�rature = premi�re temp >= temp
+    // Temp�rature = premi�re temp >= temp
     let activeTempIdx = 9;
     for (let j = 0; j < temps.length; j++) {
         if (temps[j] >= globalState.temp) {
@@ -665,6 +528,6 @@ function renderGtmTableHtml(chartDef, plotDiv) {
     const fullDec = isFAS ? torqueLimits.FAS_DEC : torqueLimits.TUYERE_DEC;
     const fullCont = isFAS ? torqueLimits.FAS_CONT : torqueLimits.TUYERE_CONT;
 
-    plotDiv.innerHTML = buildTableHTML("COUPLE MAXI 5 mn (D�collage)", matDec, fullDec) + buildTableHTML("COUPLE MAXI CONTINU", matCont, fullCont);
+    plotDiv.innerHTML = buildTableHTML("COUPLE MAXI 5 mn (D�collage)", matDec, fullDec) + buildTableHTML("COUPLE MAXI CONTINU", matCont, fullCont);
 }
 

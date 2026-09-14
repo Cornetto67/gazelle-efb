@@ -1,19 +1,19 @@
 // =========================================================================
-// BASE DE DONNÃ‰ES DES PERFORMANCES GAZELLE (SA 342 M1)
+// BASE DE DONNÃƒâ€°ES DES PERFORMANCES GAZELLE (SA 342 M1)
 // =========================================================================
 // MODE D'EMPLOI POUR AJOUTER/MODIFIER UNE COURBE :
 // 1. Utilisez "digitizer.html" pour obtenir le JSON de votre courbe.
 // 2. Collez-le dans les crochets "limitEnvelope: []" ou "curves: []" du bloc correspondant.
 // 
-// POUR AJOUTER UNE TOUTE NOUVELLE CATÃ‰GORIE (Ex: Masse max au dÃ©collage) :
+// POUR AJOUTER UNE TOUTE NOUVELLE CATÃƒâ€°GORIE (Ex: Masse max au dÃƒÂ©collage) :
 // Copiez-collez un bloc entier (ex: de "HES_ARME": { ... } ) et changez :
 // - type: "Identifiant court (ex: MMD)"
-// - typeLabel: "Nom qui apparaÃ®tra dans le 1er menu dÃ©roulant"
-// - configLabel: "Nom qui apparaÃ®tra dans le 2Ã¨me menu dÃ©roulant"
+// - typeLabel: "Nom qui apparaÃƒÂ®tra dans le 1er menu dÃƒÂ©roulant"
+// - configLabel: "Nom qui apparaÃƒÂ®tra dans le 2ÃƒÂ¨me menu dÃƒÂ©roulant"
 // - xAxisLabel et yAxisLabel : Les titres des axes (si besoin de les changer)
 
 // =========================================================================
-// BASE DE DONNÃ‰ES DE LA FLOTTE
+// BASE DE DONNÃƒâ€°ES DE LA FLOTTE
 // =========================================================================
 const fleetDatabase = {
     "F-MGAP": { number: "1234", config: "ARME", emptyWeight: 1250, emptyMomLong: 4500, emptyMomLat: 10 },
@@ -21,18 +21,18 @@ const fleetDatabase = {
 };
 
 // =========================================================================
-// SCÃ‰NARIOS DE VOL
+// SCÃƒâ€°NARIOS DE VOL
 // =========================================================================
-// Utilisez "SUFFIX" dans la liste des abaques pour qu'il soit remplacÃ© par
+// Utilisez "SUFFIX" dans la liste des abaques pour qu'il soit remplacÃƒÂ© par
 // la configuration de la machine (_ARME ou _LISSE)
 const scenariosDatabase = {
     "VOLTAC": {
         label: "Vol Tactique",
-        charts: ["TAC_SUFFIX"] // Sera remplacÃ© par TAC_ARME ou TAC_LISSE
+        charts: ["TAC_SUFFIX"] // Sera remplacÃƒÂ© par TAC_ARME ou TAC_LISSE
     },
     "MONTAGNE": {
         label: "Vol Montagne",
-        charts: ["HES_SUFFIX", "DES_SUFFIX"] // Sera remplacÃ© par HES_ARME, DES_ARME...
+        charts: ["HES_SUFFIX", "DES_SUFFIX"] // Sera remplacÃƒÂ© par HES_ARME, DES_ARME...
     }
 };
 
@@ -43,7 +43,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - PLAFOND H.E.S.",
         type: "HES",
         typeLabel: "Plafond Vol Stationnaire H.E.S.",
-        configLabel: "ArmÃ© (4 HOT, Viviane)",
+        configLabel: "ArmÃƒÂ© (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 9",
         xAxisLabel: "MASSE (kg)",
@@ -101,7 +101,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - PLAFOND D.E.S.",
         type: "DES",
         typeLabel: "Plafond Vol Stationnaire D.E.S.",
-        configLabel: "ArmÃ© (4 HOT, Viviane)",
+        configLabel: "ArmÃƒÂ© (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 10",
         xAxisLabel: "MASSE (kg)",
@@ -127,7 +127,7 @@ const chartsDatabase = {
         title: "Abaque 8.6 - VOL TACTIQUE",
         type: "TAC",
         typeLabel: "Plafond Vol Tactique",
-        configLabel: "ArmÃ© (4 HOT, Viviane)",
+        configLabel: "ArmÃƒÂ© (4 HOT, Viviane)",
         conditions: ["D.D.J.", "4 HOT", "Viseur VIVIANE"],
         planche: "Planche 11",
         xAxisLabel: "MASSE (kg)",
@@ -155,86 +155,86 @@ const chartsDatabase = {
 const panneau7Alpha = [
     // Ligne 0
     { id: 'EMPTY1', label: '', color: 'none' },
-    { id: 'PITOT', label: 'PITOT', color: 'amber', title: 'Réchauffage PITOT',
+    { id: 'PITOT', label: 'PITOT', color: 'amber', title: 'RÃ©chauffage PITOT',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>PANNE CHAUFFAGE PITOT</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne de chauffage de l'antenne PITOT.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Panne de chauffage de l'antenne PITOT.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Vérifier la position de l'interrupteur.</li>
-                        <li>Décider la poursuite du vol ou son interruption en fonction des conditions.</li>
+                        <li>VÃ©rifier la position de l'interrupteur.</li>
+                        <li>DÃ©cider la poursuite du vol ou son interruption en fonction des conditions.</li>
                     </ul>` },
     { id: 'EMPTY2', label: '', color: 'none' },
     // Ligne 1
     { id: 'H_MOT', label: 'H.MOT', color: 'amber', title: 'Pression Huile Moteur',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>H.MOT - PRESSION HUILE GTM</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Baisse de pression d'huile du G.T.M. (en vol).</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Baisse de pression d'huile du G.T.M. (en vol).</p>
                     <p class='mb-2 font-bold text-red-600'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li class='font-bold text-red-600'>Se poser dès que possible.</li>
+                        <li class='font-bold text-red-600'>Se poser dÃ¨s que possible.</li>
                         <li>En vol, maintenir la puissance la plus faible possible.</li>
                     </ul>` },
     { id: 'H_BTP', label: 'H.BTP', color: 'amber', title: 'Pression Huile BTP',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>H.BTP - PRESSION HUILE BTP</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Baisse de pression d'huile dans la B.T.P.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Baisse de pression d'huile dans la B.T.P.</p>
                     <p class='mb-2 font-bold text-red-600'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li class='font-bold text-red-600'>Se poser dès que possible.</li>
+                        <li class='font-bold text-red-600'>Se poser dÃ¨s que possible.</li>
                     </ul>` },
     { id: 'H_RAL', label: 'H.RAL', color: 'amber', title: 'Pression Huile Moteur au Ralenti',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>H.RAL - PRESSION HUILE RALENTI</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Pression d'huile G.T.M. inférieure à la pression normale de ralenti.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Pression d'huile G.T.M. infÃ©rieure Ã  la pression normale de ralenti.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
                         <li>En fonctionnement ralenti : <b>couper le G.T.M.</b></li>
-                        <li>En vol : se reporter à l'allumage du pavé "H.MOT" (si allumé).</li>
+                        <li>En vol : se reporter Ã  l'allumage du pavÃ© "H.MOT" (si allumÃ©).</li>
                     </ul>` },
     // Ligne 2
-    { id: 'GENE', label: 'GENE', color: 'amber', title: 'Panne Génératrice',
-      htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>GENE - PANNE GÉNÉRATRICE</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation du réseau en courant continu.</p>
+    { id: 'GENE', label: 'GENE', color: 'amber', title: 'Panne GÃ©nÃ©ratrice',
+      htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>GENE - PANNE GÃ‰NÃ‰RATRICE</h2>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Panne d'alimentation du rÃ©seau en courant continu.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Vérifier la position de l'interrupteur. Vérifier le voltmètre.</li>
-                        <li>Tenter un réarmement.</li>
-                        <li>Si infructueux : réduire la consommation, continuer le vol en surveillant la tension, et isoler la génératrice.</li>
+                        <li>VÃ©rifier la position de l'interrupteur. VÃ©rifier le voltmÃ¨tre.</li>
+                        <li>Tenter un rÃ©armement.</li>
+                        <li>Si infructueux : rÃ©duire la consommation, continuer le vol en surveillant la tension, et isoler la gÃ©nÃ©ratrice.</li>
                     </ul>` },
     { id: 'ALTER', label: 'ALTER', color: 'amber', title: 'Panne Alternateur',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>ALTER - PANNE ALTERNATEUR</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation de l'ensemble du réseau en courant alternatif.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Panne d'alimentation de l'ensemble du rÃ©seau en courant alternatif.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Vérifier la position de l'interrupteur.</li>
-                        <li>Tenter un réarmement.</li>
+                        <li>VÃ©rifier la position de l'interrupteur.</li>
+                        <li>Tenter un rÃ©armement.</li>
                         <li>Continuer le vol ou se poser en fonction des circonstances. Isoler l'alternateur.</li>
                     </ul>` },
-    { id: 'BAT', label: 'BAT.', color: 'amber', title: 'Batterie Isolée',
-      htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>BAT - BATTERIE DISJONCTÉE</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>La batterie est isolée du réseau continu, sa charge n'est plus assurée.</p>
+    { id: 'BAT', label: 'BAT.', color: 'amber', title: 'Batterie IsolÃ©e',
+      htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>BAT - BATTERIE DISJONCTÃ‰E</h2>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>La batterie est isolÃ©e du rÃ©seau continu, sa charge n'est plus assurÃ©e.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Vérifier la position de l'interrupteur.</li>
+                        <li>VÃ©rifier la position de l'interrupteur.</li>
                         <li>Surveiller la tension. Poursuivre le vol en fonction des circonstances.</li>
                     </ul>` },
     // Ligne 3
     { id: 'PA', label: 'PA', color: 'amber', title: 'Panne PA',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>PA - PILOTE AUTOMATIQUE</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation du PA ou des détecteurs.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Panne d'alimentation du PA ou des dÃ©tecteurs.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
                         <li>Continuer le vol.</li>
                         <li>En VMC : poursuivre en VMC.</li>
                         <li>En IMC : tenter de retrouver VMC et les conserver.</li>
                     </ul>` },
-    { id: 'NAV', label: 'NAV.', color: 'amber', title: 'Panne Réseau Alternatif',
+    { id: 'NAV', label: 'NAV.', color: 'amber', title: 'Panne RÃ©seau Alternatif',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>NAV - TENSION 26V/400Hz</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Panne d'alimentation du réseau alternatif 26 V/400 Hz.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Panne d'alimentation du rÃ©seau alternatif 26 V/400 Hz.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
                         <li>Continuer le vol ou se poser en fonction des circonstances.</li>
                     </ul>` },
     { id: 'COMB', label: 'COMB.', color: 'amber', title: 'Niveau Carburant',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>COMB - NIVEAU CARBURANT</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Quantité de carburant utilisable inférieure à 50 litres en vol stabilisé.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>QuantitÃ© de carburant utilisable infÃ©rieure Ã  50 litres en vol stabilisÃ©.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
                         <li class='font-bold text-amber-600'>Se poser ou continuer le vol, en fonction des circonstances, il reste environ 15 mn de vol.</li>
@@ -253,124 +253,124 @@ const panneau7Alpha = [
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
                         <li>Rejoindre la vitesse de refuge (150 km/h).</li>
-                        <li>Vérifier interrupteur "SERVO" sur "M".</li>
-                        <li>Si panne confirmée : Couper interrupteurs "PA", "SERVO" et "TRIM".</li>
-                        <li>La vitesse maximale est de 180 km/h. L'inclinaison maxi est de 30°.</li>
-                        <li>Lors de l'atterrissage, terminer par une approche très plate, face au vent.</li>
+                        <li>VÃ©rifier interrupteur "SERVO" sur "M".</li>
+                        <li>Si panne confirmÃ©e : Couper interrupteurs "PA", "SERVO" et "TRIM".</li>
+                        <li>La vitesse maximale est de 180 km/h. L'inclinaison maxi est de 30Â°.</li>
+                        <li>Lors de l'atterrissage, terminer par une approche trÃ¨s plate, face au vent.</li>
                     </ul>` },
     { id: 'LIM', label: 'LIM', color: 'amber', title: 'Limaille Moteur',
       htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>LIM - LIMAILLE GTM</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Détection de particules métalliques sur le bouchon magnétique du G.T.M.</p>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>DÃ©tection de particules mÃ©talliques sur le bouchon magnÃ©tique du G.T.M.</p>
                     <p class='mb-2 font-bold text-red-600'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li class='font-bold text-red-600'>Atterrir dès que possible.</li>
-                        <li>Après atterrissage, retirer le bouchon, vérifier la présence de particules. (Appliquer la procédure de levée de doute du MAT).</li>
+                        <li class='font-bold text-red-600'>Atterrir dÃ¨s que possible.</li>
+                        <li>AprÃ¨s atterrissage, retirer le bouchon, vÃ©rifier la prÃ©sence de particules. (Appliquer la procÃ©dure de levÃ©e de doute du MAT).</li>
                     </ul>` },
-    { id: 'FILT', label: 'FILT.', color: 'amber', title: 'Filtre Colmaté',
-      htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>FILT - FILTRE COLMATÉ</h2>
-                    <p class='mb-2 font-bold'>Incident signalé :</p><p class='mb-4'>Filtre carburant colmaté.</p>
+    { id: 'FILT', label: 'FILT.', color: 'amber', title: 'Filtre ColmatÃ©',
+      htmlContent: `<h2 class='text-2xl font-bold text-amber-600 mb-4'>FILT - FILTRE COLMATÃ‰</h2>
+                    <p class='mb-2 font-bold'>Incident signalÃ© :</p><p class='mb-4'>Filtre carburant colmatÃ©.</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Poursuivre le vol en surveillant les paramètres.</li>
+                        <li>Poursuivre le vol en surveillant les paramÃ¨tres.</li>
                     </ul>` }
 ];
 
 const autresPannes = [
-    { id: 'AUTOROTATION', title: 'Autorotation (Perte complète de puissance)', 
+    { id: 'AUTOROTATION', title: 'Autorotation (Perte complÃ¨te de puissance)', 
       htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>AUTOROTATION</h2>
-                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Procédure (G.T.M coupé ou panne) :</h3>
+                    <h3 class='text-xl font-bold text-slate-700 mb-2'>ProcÃ©dure (G.T.M coupÃ© ou panne) :</h3>
                     <ol class='list-decimal pl-5 space-y-2'>
-                        <li><b>Réduire le pas général</b> immédiatement.</li>
-                        <li>Contrôler la vitesse (Vi = 100 à 110 km/h conseillée).</li>
+                        <li><b>RÃ©duire le pas gÃ©nÃ©ral</b> immÃ©diatement.</li>
+                        <li>ContrÃ´ler la vitesse (Vi = 100 Ã  110 km/h conseillÃ©e).</li>
                         <li>Rechercher un terrain favorable pour l'atterrissage.</li>
-                        <li>Effectuer l'arrondi (flare) pour casser la vitesse, et se poser à plat.</li>
+                        <li>Effectuer l'arrondi (flare) pour casser la vitesse, et se poser Ã  plat.</li>
                     </ol>` },
-    { id: 'PANNE_GTM_VOL', title: 'Arrêt du GTM en vol (Panne totale)', 
-      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>ARRÊT DU G.T.M EN VOL</h2>
-                    <p class='mb-4 text-slate-600'><b>Symptômes :</b> Fuselage tourne (légèrement) à droite. "ALARM" puis "H.MOT" et "H.RAL" s'allument. La vitesse rotor diminue.</p>
-                    <h3 class='text-xl font-bold text-red-600 mb-2'>Action immédiate :</h3>
+    { id: 'PANNE_GTM_VOL', title: 'ArrÃªt du GTM en vol (Panne totale)', 
+      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>ARRÃŠT DU G.T.M EN VOL</h2>
+                    <p class='mb-4 text-slate-600'><b>SymptÃ´mes :</b> Fuselage tourne (lÃ©gÃ¨rement) Ã  droite. "ALARM" puis "H.MOT" et "H.RAL" s'allument. La vitesse rotor diminue.</p>
+                    <h3 class='text-xl font-bold text-red-600 mb-2'>Action immÃ©diate :</h3>
                     <ul class='list-disc pl-5 space-y-2 mb-4'>
-                        <li class='font-bold text-red-600'>Appliquer la procédure d'autorotation.</li>
+                        <li class='font-bold text-red-600'>Appliquer la procÃ©dure d'autorotation.</li>
                     </ul>
                     <h3 class='text-xl font-bold text-slate-700 mb-2'>Si l'altitude le permet (> 700m sol) :</h3>
                     <ul class='list-disc pl-5 space-y-2 mb-4'>
-                        <li>Tenter une remise en route (Vi ~120 km/h, sélecteur sur M).</li>
+                        <li>Tenter une remise en route (Vi ~120 km/h, sÃ©lecteur sur M).</li>
                     </ul>
                     <h3 class='text-xl font-bold text-slate-700 mb-2'>Si l'altitude est trop faible :</h3>
                     <ul class='list-disc pl-5 space-y-2'>
-                        <li>Robinet coupe-feu <b>FERMÉ</b>.</li>
-                        <li>Couper la pompe de gavage, Sélecteur sur A, Réduire la manette de débit.</li>
+                        <li>Robinet coupe-feu <b>FERMÃ‰</b>.</li>
+                        <li>Couper la pompe de gavage, SÃ©lecteur sur A, RÃ©duire la manette de dÃ©bit.</li>
                     </ul>` },
-    { id: 'FONCT_ANORMAL_REGUL', title: 'Fonctionnement anormal du régulateur', 
-      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>RÉGULATEUR ANORMAL</h2>
+    { id: 'FONCT_ANORMAL_REGUL', title: 'Fonctionnement anormal du rÃ©gulateur', 
+      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>RÃ‰GULATEUR ANORMAL</h2>
                     <p class='mb-4'>Se manifeste par des <b>battements</b> (variations de la vitesse de rotation).</p>
                     <ol class='list-decimal pl-5 space-y-2'>
-                        <li><b>Variations peu importantes :</b> perdre de l'altitude. Si le phénomène subsiste, mettre le régulateur hors circuit (diminuer de 500 tr/mn).</li>
-                        <li><b>Variations importantes et rapides :</b> mettre le régulateur hors circuit immédiatement.</li>
+                        <li><b>Variations peu importantes :</b> perdre de l'altitude. Si le phÃ©nomÃ¨ne subsiste, mettre le rÃ©gulateur hors circuit (diminuer de 500 tr/mn).</li>
+                        <li><b>Variations importantes et rapides :</b> mettre le rÃ©gulateur hors circuit immÃ©diatement.</li>
                     </ol>
-                    <p class='mt-4'><b>Vol avec régulateur hors circuit :</b> Croisière à 42.500 tr/mn environ et pas de l'ordre de 7,2°. Effectuer une approche glissée ou une autorotation selon l'équipage.</p>` },
-    { id: 'FEU_GTM', title: 'Feu au GTM (Démarrage / En vol)', 
+                    <p class='mt-4'><b>Vol avec rÃ©gulateur hors circuit :</b> CroisiÃ¨re Ã  42.500 tr/mn environ et pas de l'ordre de 7,2Â°. Effectuer une approche glissÃ©e ou une autorotation selon l'Ã©quipage.</p>` },
+    { id: 'FEU_GTM', title: 'Feu au GTM (DÃ©marrage / En vol)', 
       htmlContent: `<h2 class='text-2xl font-bold text-red-600 mb-4 border-b pb-2'>FEU AU G.T.M</h2>
-                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Feu au démarrage :</h3>
+                    <h3 class='text-xl font-bold text-slate-700 mb-2'>Feu au dÃ©marrage :</h3>
                     <ol class='list-decimal pl-5 space-y-1 mb-4'>
                         <li>Fermer le robinet "coupe-feu" et appliquer le frein rotor.</li>
-                        <li>Sélecteur de démarrage sur "A".</li>
-                        <li>Réduire la manette de débit. Couper la pompe de gavage.</li>
-                        <li>Procéder à une ventilation. Combattre le feu.</li>
+                        <li>SÃ©lecteur de dÃ©marrage sur "A".</li>
+                        <li>RÃ©duire la manette de dÃ©bit. Couper la pompe de gavage.</li>
+                        <li>ProcÃ©der Ã  une ventilation. Combattre le feu.</li>
                     </ol>
                     <h3 class='text-xl font-bold text-slate-700 mb-2'>Feu en vol :</h3>
                     <ol class='list-decimal pl-5 space-y-1'>
-                        <li>Fermer le robinet coupe-feu et <b>réduire le pas général</b>.</li>
-                        <li>Réduire la manette de débit. Couper la pompe de gavage.</li>
+                        <li>Fermer le robinet coupe-feu et <b>rÃ©duire le pas gÃ©nÃ©ral</b>.</li>
+                        <li>RÃ©duire la manette de dÃ©bit. Couper la pompe de gavage.</li>
                         <li>Ne pas tenter de rallumage. Se poser en autorotation.</li>
-                        <li>Mettre le sélecteur sur "A" dans les 20s.</li>
+                        <li>Mettre le sÃ©lecteur sur "A" dans les 20s.</li>
                     </ol>` },
-    { id: 'FUMEE_CABINE', title: 'Fumée dans la cabine', 
-      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>FUMÉE EN CABINE</h2>
-                    <p class='mb-2 text-red-600 font-bold'>Si l'origine n'est pas identifiée : ATTERRIR DES QUE POSSIBLE.</p>
+    { id: 'FUMEE_CABINE', title: 'FumÃ©e dans la cabine', 
+      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>FUMÃ‰E EN CABINE</h2>
+                    <p class='mb-2 text-red-600 font-bold'>Si l'origine n'est pas identifiÃ©e : ATTERRIR DES QUE POSSIBLE.</p>
                     <ol class='list-decimal pl-5 space-y-2'>
-                        <li>Couper batterie, génératrice, alternateur.</li>
-                        <li>Ventiler la cabine en ouvrant les fenêtres coulissantes.</li>
-                        <li>Couper tous les interrupteurs électriques et le chauffage.</li>
-                        <li>Remettre un par un les interrupteurs jusqu'à identification de la source.</li>
-                        <li>Laisser l'équipement en cause sur arrêt.</li>
+                        <li>Couper batterie, gÃ©nÃ©ratrice, alternateur.</li>
+                        <li>Ventiler la cabine en ouvrant les fenÃªtres coulissantes.</li>
+                        <li>Couper tous les interrupteurs Ã©lectriques et le chauffage.</li>
+                        <li>Remettre un par un les interrupteurs jusqu'Ã  identification de la source.</li>
+                        <li>Laisser l'Ã©quipement en cause sur arrÃªt.</li>
                     </ol>` },
     { id: 'ROTOR_ANTI_COUPLE', title: 'Panne du rotor anti-couple', 
       htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>PANNE ROTOR ANTI-COUPLE (RAC)</h2>
                     <p class='mb-4'>Mouvement de lacet vers la <b>gauche</b>.</p>
                     <h3 class='text-lg font-bold text-slate-700 mb-2'>Stationnaire / Basse vitesse / Faible altitude :</h3>
                     <ul class='list-disc pl-5 space-y-1 mb-4'>
-                        <li>Passer immédiatement en autorotation (baisser pas collectif).</li>
-                        <li>Contrer la rotation à droite (manche ou filet de puissance).</li>
+                        <li>Passer immÃ©diatement en autorotation (baisser pas collectif).</li>
+                        <li>Contrer la rotation Ã  droite (manche ou filet de puissance).</li>
                         <li>En approche finale, couper G.T.M et poser sur place (flare).</li>
                     </ul>
-                    <h3 class='text-lg font-bold text-slate-700 mb-2'>En montée / En croisière :</h3>
+                    <h3 class='text-lg font-bold text-slate-700 mb-2'>En montÃ©e / En croisiÃ¨re :</h3>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Réduire le pas pour annuler le dérapage.</li>
-                        <li>Augmenter la vitesse, contrôler le cap par le roulis.</li>
-                        <li>Rechercher un terrain pour autorotation avec flare accentué. GTM coupé en finale.</li>
+                        <li>RÃ©duire le pas pour annuler le dÃ©rapage.</li>
+                        <li>Augmenter la vitesse, contrÃ´ler le cap par le roulis.</li>
+                        <li>Rechercher un terrain pour autorotation avec flare accentuÃ©. GTM coupÃ© en finale.</li>
                     </ul>` },
     { id: 'INCIDENT_CMDE_VOL', title: 'Incidents commandes de vol / Servo-commandes', 
       htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>INCIDENT COMMANDES DE VOL</h2>
-                    <p class='mb-4'><b>Symptôme :</b> Durcissement des commandes de vol (sans allumage BP.HY).</p>
+                    <p class='mb-4'><b>SymptÃ´me :</b> Durcissement des commandes de vol (sans allumage BP.HY).</p>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Panne servo-commande confirmée : couper interrupteur "SERVO" (sur M).</li>
+                        <li>Panne servo-commande confirmÃ©e : couper interrupteur "SERVO" (sur M).</li>
                         <li>Poursuivre le vol en pilotant aux efforts.</li>
-                        <li>La vitesse maximale est réduite, atterrissage type approche plate.</li>
+                        <li>La vitesse maximale est rÃ©duite, atterrissage type approche plate.</li>
                     </ul>` },
     { id: 'ANOMALIE_CAP', title: 'Anomalies de cap / Gyro', 
       htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>ANOMALIE DE CAP</h2>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>Si le cap du directionnel est erroné, naviguer au compas de secours.</li>
-                        <li>Vérifier le fonctionnement de l'alternateur (alimentation gyro).</li>
+                        <li>Si le cap du directionnel est erronÃ©, naviguer au compas de secours.</li>
+                        <li>VÃ©rifier le fonctionnement de l'alternateur (alimentation gyro).</li>
                     </ul>` },
-    { id: 'PANNE_COUPLEMETRE', title: 'Panne de couplemètre', 
-      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>PANNE COUPLEMÈTRE</h2>
+    { id: 'PANNE_COUPLEMETRE', title: 'Panne de couplemÃ¨tre', 
+      htmlContent: `<h2 class='text-2xl font-bold text-slate-800 mb-4 border-b pb-2'>PANNE COUPLEMÃˆTRE</h2>
                     <p class='mb-2 font-bold'>Action Pilote :</p>
                     <ul class='list-disc pl-5 space-y-1'>
-                        <li>En croisière, ne pas dépasser la première butée élastique du pas général.</li>
+                        <li>En croisiÃ¨re, ne pas dÃ©passer la premiÃ¨re butÃ©e Ã©lastique du pas gÃ©nÃ©ral.</li>
                     </ul>` }
 ];
 
@@ -379,7 +379,7 @@ const autresPannes = [
 
 
 const torqueRender = {
-    TUYERE_DEC: [
+    TuyÃ¨re_DEC: [
         ['', '', '', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', '', '', ''],
         ['', '', '', '', '100', '', '', '', '', ''],
@@ -387,7 +387,7 @@ const torqueRender = {
         ['', '', '', '', '', '', '', '92', '', ''],
         ['', '', '', '', '', '94', '88', '', '', '']
     ],
-    TUYERE_CONT: [
+    TuyÃ¨re_CONT: [
         ['', '', '', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', '', '', '96'],
         ['', '', '', '', '100', '', '', '', '95', ''],
@@ -415,7 +415,7 @@ const torqueRender = {
 const torqueLimits = {
     alts: [-500, 0, 1000, 2000, 3000, 4000],
     temps: [-40, -30, -20, -10, 0, 10, 20, 30, 40, 50],
-    TUYERE_DEC: [
+    TuyÃ¨re_DEC: [
         [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
         [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
         [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -423,7 +423,7 @@ const torqueLimits = {
         [100, 100, 100, 100, 100, 100, 100,  92, null,null],
         [100, 100, 100, 100, 100,  94,  88, null,null,null]
     ],
-    TUYERE_CONT: [
+    TuyÃ¨re_CONT: [
         [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
         [100, 100, 100, 100, 100, 100, 100, 100, 100,  96],
         [100, 100, 100, 100, 100,  99,  98,  96,  95, null],
@@ -452,8 +452,8 @@ const torqueLimits = {
 
 
 const gtmCharts = {
-    "LIMITESTUYERE_LISSE": { title: "Limites Couple (Tuyère Normale)", isGTM: true, filterType: "TUYERE" },
-    "LIMITESTUYERE_ARME": { title: "Limites Couple (Tuyère Normale)", isGTM: true, filterType: "TUYERE" },
+    "LIMITESTUYERE_LISSE": { title: "Limites Couple (TuyÃ¨re Normale)", isGTM: true, filterType: "TUYERE" },
+    "LIMITESTUYERE_ARME": { title: "Limites Couple (TuyÃ¨re Normale)", isGTM: true, filterType: "TUYERE" },
     "LIMITESFAS_LISSE": { title: "Limites Couple (Filtre Anti-Sable)", isGTM: true, filterType: "FAS" },
     "LIMITESFAS_ARME": { title: "Limites Couple (Filtre Anti-Sable)", isGTM: true, filterType: "FAS" }
 };

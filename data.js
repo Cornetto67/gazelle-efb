@@ -450,3 +450,11 @@ const torqueLimits = {
 };
 
 
+
+const gtmCharts = {
+    "LIMITESTUYERE_LISSE": { title: "Limites Couple (Tuyère Normale)", isGTM: true, filterType: "TUYERE" },
+    "LIMITESTUYERE_ARME": { title: "Limites Couple (Tuyère Normale)", isGTM: true, filterType: "TUYERE" },
+    "LIMITESFAS_LISSE": { title: "Limites Couple (Filtre Anti-Sable)", isGTM: true, filterType: "FAS" },
+    "LIMITESFAS_ARME": { title: "Limites Couple (Filtre Anti-Sable)", isGTM: true, filterType: "FAS" }
+};
+Object.assign(chartsDatabase, gtmCharts);

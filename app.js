@@ -216,6 +216,7 @@ function renderScenarioTabs() {
 }
 
 
+
 function drawCharts() {
     if (typeof Plotly === "undefined") return;
 
@@ -687,3 +688,6 @@ function renderGtmTableHtml(chartDef, plotDiv) {
 
     plotDiv.innerHTML = buildTableHTML("COUPLE MAXI 5 mn (Décollage)", matDec, fullDec) + buildTableHTML("COUPLE MAXI CONTINU", matCont, fullCont);
 }
+
+
+

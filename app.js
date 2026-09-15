@@ -415,7 +415,13 @@ function showView(viewId) {
         targetView.classList.remove('hidden');
         if (viewId === 'view-perf') {
             targetView.classList.add('flex');
-            drawCharts();
+            const splash = document.getElementById('perf-splash');
+            const charts = document.getElementById('chartsLayout');
+            if (splash && charts) {
+                splash.classList.remove('hidden');
+                charts.classList.add('hidden');
+                if (typeof window.updatePrepScreen === 'function') window.updatePrepScreen();
+            }
         } else if (viewId === 'view-settings') {
             targetView.classList.add('flex');
             document.getElementById('tab-fleet').click();
@@ -624,7 +630,8 @@ window.updatePrepScreen = function() {
     const pce2 = parseFloat(document.getElementById("inp-pce2")?.value) || 0;
     const pce3 = parseFloat(document.getElementById("inp-pce3")?.value) || 0;
     const fret = parseFloat(document.getElementById("inp-fret")?.value) || 0;
-    const fuel = parseFloat(document.getElementById("inp-fuel")?.value) || 0;
+    const fuelLitres = parseFloat(document.getElementById("inp-fuel")?.value) || 0;
+    const fuel = fuelLitres * 0.8;
 
     const machine = fleetDatabase[globalState.aircraft] || { emptyWeight: 1250, emptyMomLong: 4500, config: "LISSE" };
     let emptyWeight = machine.emptyWeight || 1250;

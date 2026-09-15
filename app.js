@@ -596,6 +596,12 @@ function loadProcedure(htmlContent, btnElement, is7Alpha) {
 // Initialiser au chargement
 document.addEventListener('DOMContentLoaded', () => {
     if(typeof initPannes === 'function') initPannes();
+    document.getElementById('btn-generate-perf')?.addEventListener('click', () => {
+        document.getElementById('perf-splash').classList.add('hidden');
+        document.getElementById('chartsLayout').classList.remove('hidden');
+        drawCharts();
+    });
+
 });
 
 

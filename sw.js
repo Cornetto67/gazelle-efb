@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'gazelle-efb-v21';
+﻿const CACHE_NAME = 'gazelle-efb-v22';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -49,6 +49,7 @@ self.addEventListener('activate', (event) => {
         })
     );
 });
+
 
 
 

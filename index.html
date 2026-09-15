@@ -233,7 +233,84 @@
             </div>
             
             <!-- Conteneur des graphiques -->
-            <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-6" id="chartsLayout">
+            
+            <div id="perf-splash" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-6 w-full hidden">
+                <div class="text-center">
+                    <h2 class="text-2xl font-black text-slate-800">Pr�paration du Vol</h2>
+                    <p class="text-slate-500 text-sm">Renseignez votre devis de masse pour v�rifier le centrage et calculer les limites GTM.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    <!-- Colonne 1: Devis de Masse -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-4 border-b pb-2">Devis de Masse</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCB (Avant Droit)</label>
+                                <input type="number" id="inp-pcb" class="w-20 p-1 border rounded text-right mass-input" value="85">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PIL (Avant Gauche)</label>
+                                <input type="number" id="inp-pil" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCE 1 (Arri�re)</label>
+                                <input type="number" id="inp-pce1" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCE 2 (Arri�re)</label>
+                                <input type="number" id="inp-pce2" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCE 3 (Arri�re)</label>
+                                <input type="number" id="inp-pce3" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">Fret</label>
+                                <input type="number" id="inp-fret" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">Carburant</label>
+                                <input type="number" id="inp-fuel" class="w-20 p-1 border rounded text-right mass-input" value="300">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Colonne 2: Bilan et Centrage -->
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 flex-1">
+                            <h3 class="font-bold text-blue-800 mb-4 border-b border-blue-200 pb-2">Bilan & Centrage</h3>
+                            
+                            <div class="mb-4">
+                                <div class="text-xs font-bold text-blue-600 uppercase">Masse Totale au D�collage</div>
+                                <div class="text-3xl font-black text-blue-900"><span id="out-mass">--</span> kg</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="text-xs font-bold text-blue-600 uppercase">Centrage Longitudinal</div>
+                                <div class="text-3xl font-black text-blue-900"><span id="out-cg">--</span> m</div>
+                            </div>
+                            
+                            <div id="cg-envelope-plot" class="h-64 w-full bg-white rounded-md border border-blue-200 mb-4"></div>
+                            <div class="text-xs text-blue-600 mt-4 italic"
+                                Note : Les bras de levier utilis�s sont temporaires en attendant vos valeurs r�elles.
+                            </div>
+                        </div>
+                        
+                        <button id="btn-generate-perf" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            AFFICHER LES PERFO
+                        </button>
+                    </div>
+                    
+                    <!-- Colonne 3: GTM -->
+                    <div id="prep-gtm-container" class="bg-slate-50 p-4 rounded-lg border border-slate-200 flex flex-col gap-4 overflow-x-auto w-full">
+                        <!-- Les tableaux GTM seront inject�s ici -->
+                    </div>
+                </div>
+            </div>
+
+<div class="flex-1 overflow-y-auto p-4 flex flex-col gap-6" id="chartsLayout">
                 <!-- Rempli dynamiquement -->
                 <div class="flex items-center justify-center h-full text-slate-400 font-medium">Sélectionnez un scénario en haut pour afficher les abaques.</div>
             </div>

@@ -458,3 +458,24 @@ const gtmCharts = {
     "LIMITESFAS_ARME": { title: "Limites Couple (Filtre Anti-Sable)", isGTM: true, filterType: "FAS" }
 };
 Object.assign(chartsDatabase, gtmCharts);
+
+
+// ==========================================================================
+// DONNÉES DE CENTRAGE (BRAS DE LEVIER)
+// ==========================================================================
+const cgData = {
+    leverArms: {
+        PCB: 1.50,
+        PIL: 1.50,
+        PCE1: 2.50,
+        PCE2: 2.50,
+        PCE3: 2.50,
+        FRET_CAB: 2.50,
+        FRET_SOUTE: 3.50,
+        FUEL: 3.00
+    },
+    envelope: {
+        x: [4.15, 4.30, 4.30, 4.15, 4.15],
+        y: [1200, 1200, 2100, 2100, 1200]
+    }
+};

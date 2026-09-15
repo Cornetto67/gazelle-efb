@@ -605,6 +605,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-generate-perf')?.addEventListener('click', () => {
         document.getElementById('perf-splash').classList.add('hidden');
         document.getElementById('chartsLayout').classList.remove('hidden');
+        const slider = document.getElementById('frm-mass');
+        if (slider) slider.disabled = false;
         drawCharts();
     });
 

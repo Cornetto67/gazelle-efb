@@ -195,11 +195,9 @@ function syncUI() {
         blockInputMass.classList.add('hidden');
     }
 
-    renderScenarioTabs();
+        renderScenarioTabs();
+    if (typeof window.updatePrepScreen === 'function') window.updatePrepScreen();
     drawCharts();
-    if (document.getElementById('perf-splash') && !document.getElementById('perf-splash').classList.contains('hidden')) {
-        if (typeof window.updatePrepScreen === 'function') window.updatePrepScreen();
-    }
 }
 
 function renderScenarioTabs() {
@@ -416,17 +414,9 @@ function showView(viewId) {
     const targetView = document.getElementById(viewId);
     if (targetView) {
         targetView.classList.remove('hidden');
-        if (viewId === 'view-perf') {
+                if (viewId === 'view-perf') {
             targetView.classList.add('flex');
-            const splash = document.getElementById('perf-splash');
-            const charts = document.getElementById('chartsLayout');
-            if (splash && charts) {
-                splash.classList.remove('hidden');
-                charts.classList.add('hidden');
-                if (typeof window.updatePrepScreen === 'function') window.updatePrepScreen();
-            } else {
-                drawCharts();
-            }
+            syncUI();
         } else if (viewId === 'view-settings') {
             targetView.classList.add('flex');
             document.getElementById('tab-fleet').click();
@@ -688,8 +678,8 @@ window.updatePrepScreen = function() {
         ];
         const layout = {
             margin: { t: 20, b: 20, l: 40, r: 20 },
-            xaxis: { title: "Centrage (m)", range: [4.0, 4.5] },
-            yaxis: { title: "Masse (kg)", range: [1000, 2300] },
+            xaxis: { title: "Centrage (m)" },
+            yaxis: { title: "Masse (kg)" },
             showlegend: false,
             paper_bgcolor: "transparent",
             plot_bgcolor: "transparent"
@@ -800,90 +790,3 @@ function renderGtmTableHtml(chartDef, plotDiv) {
 
 
 
-window.updatePrepScreen = function() {
-    const pcb = parseFloat(document.getElementById("inp-pcb")?.value) || 0;
-    const pil = parseFloat(document.getElementById("inp-pil")?.value) || 0;
-    const pce1 = parseFloat(document.getElementById("inp-pce1")?.value) || 0;
-    const pce2 = parseFloat(document.getElementById("inp-pce2")?.value) || 0;
-    const pce3 = parseFloat(document.getElementById("inp-pce3")?.value) || 0;
-    const fret = parseFloat(document.getElementById("inp-fret")?.value) || 0;
-    const fuelLitres = parseFloat(document.getElementById("inp-fuel")?.value) || 0;
-    const fuel = fuelLitres * 0.8;
-
-    const machine = fleetDatabase[globalState.aircraft] || { emptyWeight: 1250, emptyMomLong: 4500, config: "LISSE" };
-    let emptyWeight = machine.emptyWeight || 1250;
-    let emptyMoment = machine.emptyMomLong || (emptyWeight * 4.15);
-
-    const totalMass = emptyWeight + pcb + pil + pce1 + pce2 + pce3 + fret + fuel;
-    const totalMoment = emptyMoment + 
-        (pcb * cgData.leverArms.PCB) + 
-        (pil * cgData.leverArms.PIL) + 
-        (pce1 * cgData.leverArms.PCE1) + 
-        (pce2 * cgData.leverArms.PCE2) + 
-        (pce3 * cgData.leverArms.PCE3) + 
-        (fret * cgData.leverArms.FRET_CAB) + 
-        (fuel * cgData.leverArms.FUEL);
-
-    const cg = totalMass > 0 ? (totalMoment / totalMass).toFixed(2) : 0;
-
-    globalState.mass = totalMass;
-    if (document.getElementById("out-mass")) document.getElementById("out-mass").textContent = totalMass;
-    if (document.getElementById("out-cg")) document.getElementById("out-cg").textContent = cg;
-    
-    const slider = document.getElementById("frm-mass");
-    if (slider) {
-        slider.value = totalMass;
-        if(document.getElementById("display-mass")) document.getElementById("display-mass").textContent = totalMass;
-        slider.disabled = true; // disable slider on prep screen
-    }
-
-    if (typeof Plotly !== "undefined" && document.getElementById("cg-envelope-plot")) {
-        const plotData = [
-            {
-                x: cgData.envelope.x,
-                y: cgData.envelope.y,
-                mode: "lines",
-                fill: "tozeroy",
-                fillcolor: "rgba(41, 99, 228, 0.2)",
-                line: { color: "rgba(41, 99, 228, 0.8)", width: 2 },
-                name: "Domaine"
-            },
-            {
-                x: [cg],
-                y: [totalMass],
-                mode: "markers",
-                marker: { color: "red", size: 12 },
-                name: "Centrage Actuel"
-            }
-        ];
-        const layout = {
-            margin: { t: 20, b: 20, l: 40, r: 20 },
-            xaxis: { title: "Centrage (m)", range: [4.0, 4.5] },
-            yaxis: { title: "Masse (kg)", range: [1000, 2300] },
-            showlegend: false,
-            paper_bgcolor: "transparent",
-            plot_bgcolor: "transparent"
-        };
-        Plotly.react("cg-envelope-plot", plotData, layout, { displayModeBar: false, responsive: true });
-    }
-
-    const gtmContainer = document.getElementById("prep-gtm-container");
-    if (gtmContainer) {
-        gtmContainer.innerHTML = "";
-        const chartDef = {
-            isGTM: true,
-            filterType: machine.config === "ARME" || machine.config === "FAS" ? "FAS" : "TUYERE"
-        };
-        const div = document.createElement("div");
-        div.className = "bg-white p-4 rounded-md border border-slate-200 shadow-sm w-full";
-        div.innerHTML = '<h3 class="font-bold text-slate-700 mb-2">Limites Couple (' + chartDef.filterType + ')</h3>';
-        gtmContainer.appendChild(div);
-        if (typeof renderGtmTableHtml === "function") {
-            renderGtmTableHtml(chartDef, div);
-        }
-    }
-};
-
-document.querySelectorAll('.mass-input').forEach(inp => {
-    inp.addEventListener('input', window.updatePrepScreen);
-});

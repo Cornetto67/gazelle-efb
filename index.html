@@ -47,14 +47,14 @@
 
     <!-- VUE ACCUEIL -->
     <div id="view-home" class="app-view flex-1 flex flex-col items-center justify-center p-8 bg-slate-100">
-        <h2 class="text-3xl font-black text-slate-800 mb-10">Sélectionnez un module</h2>
+        <h2 class="text-3xl font-black text-slate-800 mb-10">Sélectionnez un modèle</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
             <button id="btn-nav-perf" class="bg-white hover:bg-blue-50 border-2 border-blue-100 hover:border-blue-300 p-8 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center gap-4">
                 <div class="bg-blue-100 p-4 rounded-full">
                     <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
                 <h3 class="text-xl font-bold text-slate-700">PERFORMANCES</h3>
-                <p class="text-sm text-slate-500 text-center">Calculs de plafonds, masses maximales et scénarios de vol.</p>
+                <p class="text-sm text-slate-500 text-center">Calculéés de plafonds, masses maximales et scénarios de vol.</p>
             </button>
             <button id="btn-nav-pannes" class="bg-white hover:bg-red-50 border-2 border-red-100 hover:border-red-300 p-8 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center gap-4">
                 <div class="bg-red-100 p-4 rounded-full">
@@ -80,7 +80,7 @@
             <h2 class="text-lg font-black text-slate-800 mb-6 px-2">Réglages</h2>
             <nav class="flex flex-col gap-2">
                 <button id="tab-fleet" class="text-left px-4 py-3 rounded-lg bg-blue-50 text-blue-700 font-bold hover:bg-blue-100 transition">Flotte & Aéronefs</button>
-                <button id="tab-scenarios" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Profils de Vol</button>
+                <button id="tab-scénarios" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Profils de Vol</button>
                 <button id="tab-export" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Import / Export</button>
             </nav>
         </div>
@@ -226,9 +226,9 @@
         </div>
 
         <!-- Panneau Droit : Scénarios & Graphiques -->
-        <div class="flex-1 bg-slate-200 flex flex-col relative overflow-hidden" id="scenariosContainer">
+        <div class="flex-1 bg-slate-200 flex flex-col relative overflow-hidden" id="scénariosContainer">
             <!-- Barre des scénarios -->
-            <div class="bg-white shadow-sm p-3 flex gap-3 overflow-x-auto border-b border-slate-200 z-10" id="scenarioTabs">
+            <div class="bg-white shadow-sm p-3 flex gap-3 overflow-x-auto border-b border-slate-200 z-10" id="scénarioTabs">
                 <!-- Rempli par app.js -->
             </div>
             

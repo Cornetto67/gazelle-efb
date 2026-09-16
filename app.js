@@ -420,6 +420,7 @@ function showView(viewId) {
         } else if (viewId === 'view-settings') {
             targetView.classList.add('flex');
             document.getElementById('tab-fleet').click();
+        
         } else if (viewId === 'view-pannes') {
             targetView.classList.add('flex');
         } else if (viewId === 'view-home') {
@@ -428,21 +429,24 @@ function showView(viewId) {
     }
 
     const btnBack = document.getElementById('btn-back-home');
-    if (viewId === 'view-home') {
-        btnBack.classList.add('hidden');
-    } else {
-        btnBack.classList.remove('hidden');
+    if (btnBack) {
+        if (viewId === 'view-home') {
+            btnBack.classList.add('hidden');
+        } else {
+            btnBack.classList.remove('hidden');
+        }
     }
 }
 
 window.updateAircraftSelector = function() {
     const selectAircraft = document.getElementById('selectAircraft');
+    if (!selectAircraft) return;
     const currentVal = selectAircraft.value;
     selectAircraft.innerHTML = '';
     for (const [immat, data] of Object.entries(fleetDatabase)) {
         const opt = document.createElement('option');
         opt.value = immat;
-        opt.textContent = `${immat} (${data.number || '-'}) - ${data.config || 'LISSE'}`;
+        opt.textContent = immat + ' (' + (data.number || '-') + ') - ' + (data.config || 'LISSE');
         selectAircraft.appendChild(opt);
     }
     if (fleetDatabase[currentVal]) {
@@ -454,54 +458,57 @@ window.updateAircraftSelector = function() {
             globalState.aircraft = first;
         }
     }
-    updateAircraftMass();
-    syncUI();
+    if(typeof updateAircraftMass === 'function') updateAircraftMass();
+    if(typeof syncUI === 'function') syncUI();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Charger la BD locale (fonction définie dans settings.js)
     if (typeof loadUserDatabase === 'function') loadUserDatabase();
-
-    // 2. Remplir le sélecteur
     updateAircraftSelector();
 
-    // 3. Écouteurs de navigation
-    document.getElementById('btn-nav-perf').addEventListener('click', () => showView('view-perf'));
-    document.getElementById('btn-nav-pannes').addEventListener('click', () => showView('view-pannes'));
-    document.getElementById('btn-nav-settings').addEventListener('click', () => showView('view-settings'));
-    document.getElementById('btn-back-home').addEventListener('click', () => showView('view-home'));
+    const addClick = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+    
+    addClick('btn-nav-perf', () => showView('view-perf'));
+    addClick('btn-nav-pannes', () => showView('view-pannes'));
+    addClick('btn-nav-settings', () => showView('view-settings'));
+    addClick('btn-back-home', () => showView('view-home'));
 
-    // 4. Écouteurs Réglages (Tabs)
-    if (document.getElementById('tab-fleet')) {
-        document.getElementById('tab-fleet').addEventListener('click', (e) => {
+    const tabFleet = document.getElementById('tab-fleet');
+    if (tabFleet) {
+        tabFleet.addEventListener('click', (e) => {
             document.querySelectorAll('#view-settings nav button').forEach(b => { b.classList.remove('bg-blue-50','text-blue-700','font-bold'); b.classList.add('text-slate-600','font-medium'); });
             e.target.classList.add('bg-blue-50','text-blue-700','font-bold');
             if (typeof renderSettingsFleet === 'function') renderSettingsFleet();
         });
-        document.getElementById('tab-scenarios').addEventListener('click', (e) => {
+        const tabScen = document.getElementById('tab-scenarios');
+        if (tabScen) tabScen.addEventListener('click', (e) => {
             document.querySelectorAll('#view-settings nav button').forEach(b => { b.classList.remove('bg-blue-50','text-blue-700','font-bold'); b.classList.add('text-slate-600','font-medium'); });
             e.target.classList.add('bg-blue-50','text-blue-700','font-bold');
             if (typeof renderSettingsScenarios === 'function') renderSettingsScenarios();
         });
-        document.getElementById('tab-export').addEventListener('click', (e) => {
+        const tabExp = document.getElementById('tab-export');
+        if (tabExp) tabExp.addEventListener('click', (e) => {
             document.querySelectorAll('#view-settings nav button').forEach(b => { b.classList.remove('bg-blue-50','text-blue-700','font-bold'); b.classList.add('text-slate-600','font-medium'); });
             e.target.classList.add('bg-blue-50','text-blue-700','font-bold');
             if (typeof renderSettingsExport === 'function') renderSettingsExport();
         });
     }
 
-    // 5. Écouteurs Inputs
-    document.getElementById('selectAircraft').addEventListener('change', (e) => { globalState.aircraft = e.target.value; updateAircraftMass(); syncUI(); });
-    document.getElementById('tempInput').addEventListener('input', (e) => { globalState.temp = parseFloat(e.target.value); syncUI(); });
-    document.getElementById('qnhInput').addEventListener('input', (e) => { globalState.qnh = parseFloat(e.target.value); syncUI(); });
-    document.getElementById('elevationInput').addEventListener('input', (e) => { globalState.elevation = parseFloat(e.target.value); syncUI(); });
-    document.getElementById('massInput').addEventListener('input', (e) => { globalState.mass = parseFloat(e.target.value); syncUI(); });
-    document.getElementById('altInput').addEventListener('input', (e) => { globalState.targetAlt = parseFloat(e.target.value); syncUI(); });
+    const addInput = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('input', fn); };
+    const addChange = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('change', fn); };
 
-    document.getElementById('btnModeAlt').addEventListener('click', () => { globalState.mode = 'ALT'; syncUI(); });
-    document.getElementById('btnModeMass').addEventListener('click', () => { globalState.mode = 'MASS'; syncUI(); });
+    addChange('selectAircraft', (e) => { globalState.aircraft = e.target.value; updateAircraftMass(); syncUI(); });
+    addInput('tempInput', (e) => { globalState.temp = parseFloat(e.target.value); syncUI(); });
+    addInput('qnhInput', (e) => { globalState.qnh = parseFloat(e.target.value); syncUI(); });
+    addInput('elevationInput', (e) => { globalState.elevation = parseFloat(e.target.value); syncUI(); });
+    addInput('massInput', (e) => { globalState.mass = parseFloat(e.target.value); syncUI(); });
+    addInput('altInput', (e) => { globalState.targetAlt = parseFloat(e.target.value); syncUI(); });
 
-    // Init state
+    addClick('btnModeAlt', () => { globalState.mode = 'ALT'; syncUI(); });
+    addClick('btnModeMass', () => { globalState.mode = 'MASS'; syncUI(); });
+
+    if(typeof initPannes === 'function') initPannes();
+
     showView('view-home');
 });
 
@@ -629,13 +636,15 @@ window.updatePrepScreen = function() {
     const pce2 = parseFloat(document.getElementById("inp-pce2")?.value) || 0;
     const pce3 = parseFloat(document.getElementById("inp-pce3")?.value) || 0;
     const fret = parseFloat(document.getElementById("inp-fret")?.value) || 0;
-    const fuel = parseFloat(document.getElementById("inp-fuel")?.value) || 0;
+    const fuelLiters = parseFloat(document.getElementById("inp-fuel")?.value) || 0;
 
-    const machine = fleetDatabase[globalState.aircraft] || { emptyWeight: 1250, emptyMomLong: 4500, config: "LISSE" };
-    let emptyWeight = machine.emptyWeight || 1250;
-    let emptyMoment = machine.emptyMomLong || (emptyWeight * 4.15);
+    const fuelKg = fuelLiters * 0.79;
 
-    const totalMass = emptyWeight + pcb + pil + pce1 + pce2 + pce3 + fret + fuel;
+    const machine = fleetDatabase[globalState.aircraft] || { emptyWeight: 1439, emptyMomLong: 4314, config: "LISSE" };
+    let emptyWeight = machine.emptyWeight || 1439;
+    let emptyMoment = machine.emptyMomLong || (emptyWeight * 3.00);
+
+    const totalMass = emptyWeight + pcb + pil + pce1 + pce2 + pce3 + fret + fuelKg;
     const totalMoment = emptyMoment + 
         (pcb * cgData.leverArms.PCB) + 
         (pil * cgData.leverArms.PIL) + 
@@ -643,21 +652,20 @@ window.updatePrepScreen = function() {
         (pce2 * cgData.leverArms.PCE2) + 
         (pce3 * cgData.leverArms.PCE3) + 
         (fret * cgData.leverArms.FRET_CAB) + 
-        (fuel * cgData.leverArms.FUEL);
+        (fuelKg * cgData.leverArms.FUEL);
 
-    const cg = totalMass > 0 ? (totamMoment / totalMass).toFixed(2) : 0;
+    const cg = totalMass > 0 ? (totalMoment / totalMass).toFixed(3) : 0;
 
     globalState.mass = totalMass;
-    if (document.getElementById("out-mass")) document.getElementById("out-mass").textContent = totalMass;
+    if (document.getElementById("out-mass")) document.getElementById("out-mass").textContent = Math.round(totalMass);
     if (document.getElementById("out-cg")) document.getElementById("out-cg").textContent = cg;
     
-    const slider = document.getElementById("frm-mass");
-    if (slider) {
-        slider.value = totalMass;
-        if(document.getElementById("display-mass")) document.getElementById("display-mass").textContent = totalMass;
-    }
+    const slider = document.getElementById("massInput");
+    const sliderVal = document.getElementById("massValue");
+    if (slider) slider.value = Math.round(totalMass);
+    if (sliderVal) sliderVal.textContent = Math.round(totalMass);
 
-    if (typeof Plotly !== "nundefined" && document.getElementById("cg-envelope-plot")) {
+    if (typeof Plotly !== "undefined" && document.getElementById("cg-envelope-plot")) {
         const plotData = [
             {
                 x: cgData.envelope.x,
@@ -689,19 +697,40 @@ window.updatePrepScreen = function() {
 
     const gtmContainer = document.getElementById("prep-gtm-container");
     if (gtmContainer) {
-        gtmContainer.innerHTML = "";
-        const chartDef = {
-            isGTM: true,
-            filterType: machine.config === "ARME" || machine.config === "FAS" ? "FAS" : "TUYERE"
-        };
-        const div = document.createElement("div");
-        div.className = "bg-white p-4 rounded-md border border-slate-200 shadow-sm w-full";
-        
-        div.innerHTML = '<h3 class="font-bold text-slate-700 mb-2">Limites Couple (' + chartDef.filterType + ')</h3>';
-        gtmContainer.appendChild(div);
-        renderGtmTableHtml(chartDef, div);
+        gtmContainer.innerHTML = '';
+        const scenario = scenariosDatabase[globalState.scenario];
+        if (scenario) {
+            const aircraftConfig = fleetDatabase[globalState.aircraft]?.config || "LISSE";
+            const sortedCharts = [...scenario.charts].sort((a, b) => {
+                const defA = chartsDatabase[a.replace("SUFFIX", aircraftConfig)];
+                const defB = chartsDatabase[b.replace("SUFFIX", aircraftConfig)];
+                if (defA?.isGTM && !defB?.isGTM) return -1;
+                if (!defA?.isGTM && defB?.isGTM) return 1;
+                return 0;
+            });
+
+            sortedCharts.forEach(rawChartId => {
+                const chartId = rawChartId.replace("SUFFIX", aircraftConfig);
+                const chartDef = chartsDatabase[chartId];
+                if (chartDef && chartDef.isGTM) {
+                    const plotDiv = document.createElement('div');
+                    plotDiv.id = "gtm-prep-" + chartId;
+                    plotDiv.className = "w-full";
+                    
+                    const header = document.createElement("div");
+                    header.className = "flex justify-between items-start mb-2";
+                    header.innerHTML = '<div><h3 class="font-bold text-slate-800">' + chartDef.title + '</h3><div class="text-xs text-slate-500 italic mt-1">Limites Couple 5mn & Continu</div></div>';
+                    
+                    gtmContainer.appendChild(header);
+                    gtmContainer.appendChild(plotDiv);
+                    
+                    renderGtmTableHtml(chartDef, plotDiv);
+                }
+            });
+        }
     }
 };
+
 
 document.querySelectorAll(".mass-input").forEach(inp => {
     inp.addEventListener("input", window.updatePrepScreen);

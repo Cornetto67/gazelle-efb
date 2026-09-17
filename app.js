@@ -438,7 +438,7 @@ function showView(viewId) {
     }
 }
 
-window.updateAircraftSelector = function() {
+function updateAircraftSelector() {
     const selectAircraft = document.getElementById('selectAircraft');
     if (!selectAircraft) return;
     const currentVal = selectAircraft.value;
@@ -668,10 +668,10 @@ window.updatePrepScreen = function() {
     if (typeof Plotly !== "undefined" && document.getElementById("cg-envelope-plot")) {
         const plotData = [
             {
-                x: cgData.envelope.x,
-                y: cgData.envelope.y,
+                x: [...cgData.envelope.x, cgData.envelope.x[0]],
+                y: [...cgData.envelope.y, cgData.envelope.y[0]],
                 mode: "lines",
-                fill: "tozeroy",
+                fill: "toself",
                 fillcolor: "rgba(41, 99, 228, 0.2)",
                 line: { color: "rgba(41, 99, 228, 0.8)", width: 2 },
                 name: "Domaine"
@@ -685,9 +685,21 @@ window.updatePrepScreen = function() {
             }
         ];
         const layout = {
-            margin: { t: 20, b: 20, l: 40, r: 20 },
-            xaxis: { title: "Centrage (m)" },
-            yaxis: { title: "Masse (kg)" },
+            margin: { t: 20, b: 40, l: 50, r: 20 },
+            xaxis: { 
+                title: "Centrage (m)",
+                range: [2.78, 3.02],
+                tickvals: [2.80, 2.83, 2.90, 3.00],
+                ticktext: ['2.80', '2.83', '2.90', '3.00'],
+                fixedrange: true
+            },
+            yaxis: { 
+                title: "Masse (kg)",
+                range: [1350, 2150],
+                tickvals: [1400, 1850, 2100],
+                ticktext: ['1400', '1850', '2100'],
+                fixedrange: true
+            },
             showlegend: false,
             paper_bgcolor: "transparent",
             plot_bgcolor: "transparent"
@@ -740,20 +752,22 @@ function renderGtmTableHtml(chartDef, plotDiv) {
     const isFAS = chartDef.filterType === 'FAS';
     const matDec = isFAS ? torqueRender.FAS_DEC : torqueRender.TUYERE_DEC;
     const matCont = isFAS ? torqueRender.FAS_CONT : torqueRender.TUYERE_CONT;
-    const alts = [4000, 3000, 2000, 1000, 0, -500]; // On affiche du haut vers le bas
-    const altIdxs = [5, 4, 3, 2, 1, 0];
+    const alts = [-500, 0, 1000, 2000, 3000, 4000]; // On affiche selon le manuel (-500 en haut)
+    const altIdxs = [0, 1, 2, 3, 4, 5];
     const temps = [-40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
 
     // Calcul de la case p�nalisante : 
     // Altitude = premi�re altitude >= pressureAlt
+        // Altitude = dépend du mode
+    let effAlt = (globalState.mode === 'MASS') ? globalState.targetAlt : (globalState.pressureAlt * 0.3048);
     let activeAltIdx = 5; 
     for (let i = 0; i < torqueLimits.alts.length; i++) {
-        if (torqueLimits.alts[i] >= globalState.pressureAlt) {
+        if (torqueLimits.alts[i] >= effAlt) {
             activeAltIdx = i;
             break;
         }
     }
-    if (globalState.pressureAlt < -500) activeAltIdx = 0;
+    if (effAlt < -500) activeAltIdx = 0;
 
     // Temp�rature = premi�re temp >= temp
     let activeTempIdx = 9;
@@ -779,7 +793,7 @@ function renderGtmTableHtml(chartDef, plotDiv) {
                     </div>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-[11px] sm:text-xs border-collapse border border-slate-800 text-center">
+                    <table class="w-full text-[11px] sm:text-xs border-collapse text-center relative">
                         <thead>
                             <tr class="bg-slate-100">
                                 <th class="border border-slate-800 p-1 font-bold">ALT. PRES.</th>
@@ -793,10 +807,35 @@ function renderGtmTableHtml(chartDef, plotDiv) {
             let altDisplay = alts[i];
             let mappedIdx = altIdxs[i];
             html += `<tr><td class="border border-slate-800 font-bold p-1 bg-slate-50">${altDisplay}</td>`;
+            
+            let lastValidJ = -1;
+            for (let j = 0; j < temps.length; j++) {
+                if (fullDataMat[mappedIdx][j] !== null) {
+                    lastValidJ = j;
+                }
+            }
+
             for (let j = 0; j < temps.length; j++) {
                 let cellVal = mat[mappedIdx][j];
+                let fullVal = fullDataMat[mappedIdx][j];
                 let isTarget = (mappedIdx === activeAltIdx && j === activeTempIdx);
+                
+                if (fullVal === null) {
+                    continue; // HORS DOMAINE: on ne génère pas la case !
+                }
+                
                 let cellClass = isTarget ? `border-4 border-red-500 bg-red-100 font-black text-red-700` : `border border-slate-800`;
+                
+                if (fullVal === 100 && cellVal === '') {
+                    cellClass += " bg-gray-400"; // Zone grisée
+                }
+                
+                if (mappedIdx === 4 && j === lastValidJ) {
+                    let label = isFAS ? "2x2 HOT<br>D-D-J<br>F-A-S" : "2x2 HOT<br>TUYERE<br>NORMALE";
+                    cellVal += `<div class="absolute text-[10px] sm:text-xs font-bold text-slate-800 leading-tight text-left" style="transform: translate(60%, 50%); z-index: 10; width: max-content;">${label}</div>`;
+                    cellClass += " relative";
+                }
+                
                 html += `<td class="${cellClass}">${cellVal}</td>`;
             }
             html += `</tr>`;

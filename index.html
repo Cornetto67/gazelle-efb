@@ -54,7 +54,7 @@
                     <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
                 <h3 class="text-xl font-bold text-slate-700">PERFORMANCES</h3>
-                <p class="text-sm text-slate-500 text-center">Calculéés de plafonds, masses maximales et scénarios de vol.</p>
+                <p class="text-sm text-slate-500 text-center">Calculé de plafonds, masses maximales et scénarios de vol.</p>
             </button>
             <button id="btn-nav-pannes" class="bg-white hover:bg-red-50 border-2 border-red-100 hover:border-red-300 p-8 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center gap-4">
                 <div class="bg-red-100 p-4 rounded-full">
@@ -80,7 +80,7 @@
             <h2 class="text-lg font-black text-slate-800 mb-6 px-2">Réglages</h2>
             <nav class="flex flex-col gap-2">
                 <button id="tab-fleet" class="text-left px-4 py-3 rounded-lg bg-blue-50 text-blue-700 font-bold hover:bg-blue-100 transition">Flotte & Aéronefs</button>
-                <button id="tab-scénarios" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Profils de Vol</button>
+                <button id="tab-scenarios" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Profils de Vol</button>
                 <button id="tab-export" class="text-left px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition">Import / Export</button>
             </nav>
         </div>
@@ -179,7 +179,39 @@
                     </div>
                 </div>
 
-                <!-- Toggle Mode -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-4 border-b pb-2">Devis de Masse</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCB (Avant Droit)</label>
+                                <input type="number" id="inp-pcb" class="w-20 p-1 border rounded text-right mass-input" value="85">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PIL (Avant Gauche)</label>
+                                <input type="number" id="inp-pil" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCE 1 (Arrière)</label>
+                                <input type="number" id="inp-pce1" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCE 2 (Arrière)</label>
+                                <input type="number" id="inp-pce2" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">PCE 3 (Arrière)</label>
+                                <input type="number" id="inp-pce3" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">Fret</label>
+                                <input type="number" id="inp-fret" class="w-20 p-1 border rounded text-right mass-input" value="0">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <label class="font-bold text-slate-600">Carburant</label>
+                                <input type="number" id="inp-fuel" class="w-20 p-1 border rounded text-right mass-input" value="300">
+                            </div>
+                        </div>
+<!-- Toggle Mode -->
                 <div class="bg-slate-100 p-1 rounded-lg flex gap-1">
                     <button id="btnModeAlt" class="flex-1 py-2 text-sm font-bold bg-white text-blue-700 rounded shadow-sm border border-slate-200 transition-all">Chercher Plafond</button>
                     <button id="btnModeMass" class="flex-1 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 rounded transition-all">Chercher Masse Max</button>
@@ -188,7 +220,7 @@
                 <div class="h-px bg-gray-100"></div>
 
                 <!-- Input: Masse (Visible en Mode Altitude) -->
-                <div id="blockInputMass">
+                <div id="blockInputMass" class="hidden">
                     <div class="flex justify-between items-end mb-3">
                         <label class="block text-sm font-bold text-slate-700">Masse de l'appareil</label>
                         <div class="text-right">
@@ -224,21 +256,23 @@
                 <span class="text-xs font-bold text-blue-800 uppercase">Paramètres globaux prêts</span>
             </div>
         </div>
+        </div>
 
         <!-- Panneau Droit : Scénarios & Graphiques -->
-        <div class="flex-1 bg-slate-200 flex flex-col relative overflow-hidden" id="scénariosContainer">
+        <div class="flex-1 bg-slate-200 flex flex-col relative overflow-hidden" id="scenariosContainer">
             <!-- Barre des scénarios -->
-            <div class="bg-white shadow-sm p-3 flex gap-3 overflow-x-auto border-b border-slate-200 z-10" id="scénarioTabs">
+            <div class="bg-white shadow-sm p-3 flex gap-3 overflow-x-auto border-b border-slate-200 z-10" id="scenarioTabs">
                 <!-- Rempli par app.js -->
             </div>
             
             <!-- Conteneur des graphiques -->
             
             
-                    
-                    <!-- Colonne 2: Bilan et Centrage -->
-                    <div class="flex flex-col gap-4">
-                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 flex-1">
+
+
+            <div class="p-4 flex flex-col gap-6 overflow-y-auto h-full w-full">
+                <div class="w-full flex flex-col gap-6">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 flex-1">
                             <h3 class="font-bold text-blue-800 mb-4 border-b border-blue-200 pb-2">Bilan & Centrage</h3>
                             
                             <div class="mb-4">
@@ -252,25 +286,14 @@
                             </div>
                             
                             <div id="cg-envelope-plot" class="h-64 w-full bg-white rounded-md border border-blue-200 mb-4"></div>
-                            <div class="text-xs text-blue-600 mt-4 italic"
-                                Note : Les bras de levier utilis�s sont temporaires en attendant vos valeurs r�elles.
-                            </div>
+                            
                         </div>
-                        
-                        
-                    </div>
                     
-                    <!-- Colonne 3: GTM -->
-                    <div id="prep-gtm-container" class="bg-slate-50 p-4 rounded-lg border border-slate-200 flex flex-col gap-4 overflow-x-auto w-full">
-                        <!-- Les tableaux GTM seront inject�s ici -->
-                    </div>
                 </div>
+                <div class="w-full flex flex-col gap-6" id="chartsLayout"></div>
             </div>
-<div class="w-full flex flex-col gap-6 mt-6" id="chartsLayout"></div>
 
-
-            </div>
-        </div>
+                    </div>
     </div>
 
     <!-- Base de données (Modifiable par l'utilisateur) -->
